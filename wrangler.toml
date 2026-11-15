@@ -1,0 +1,14 @@
+name = "sahliotomotiv-js"
+main = "worker.js"
+compatibility_date = "2026-11-16"
+keep_vars = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sahliotomotiv-db"
+database_id = "f7e89686-0db0-4a78-8e40-af5a4fc80e4d"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true

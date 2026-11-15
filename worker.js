@@ -114,6 +114,9 @@ function kabukAc(baslik, aciklama) {
   .grup-kart{border:1px solid #e3e8f0;border-radius:10px;padding:16px;background:#f8fafc}
   .grup-kart b{color:var(--lacivert);display:block;margin-bottom:6px;font-size:15px}
   .grup-kart span{font-size:13px;color:#51607a}
+  .urun-gorsel{width:100%;aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#eef2f8;margin-bottom:8px;display:block}
+  .urun-yer{width:100%;aspect-ratio:4/3;border-radius:8px;background:#eef2f8;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#8a97ad;font-size:12px;text-align:center;padding:6px}
+  .urun-detay-gorsel{width:100%;max-width:360px;border-radius:10px;object-fit:cover;margin:10px 0}
   .iletisim-kutu{background:#f0f6ff;border-radius:12px;padding:20px;margin-top:10px}
   .iletisim-kutu div{margin:6px 0;font-size:15px}
   a.wa-btn{display:inline-block;margin-top:14px;background:#25D366;color:#fff;padding:12px 22px;border-radius:30px;text-decoration:none;font-weight:bold}
@@ -149,6 +152,13 @@ const GRUPLAR = [
   { b: 'Audiobus', ad: 'Ticari Araç Elektroniği', aciklama: 'Kamera/monitör sistemleri, aydınlatma, ses ve güç çözümleri' },
   { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri', aciklama: 'Bant, streç film, karton, çemberleme ve plastik kasa ürünleri' },
 ];
+
+// Ürün kartı/sayfasında görsel: image_url doluysa gerçek fotoğraf gösterilir;
+// boşsa (Güven henüz kendi fotoğrafını eklemediyse) sade "Görsel hazırlanıyor" kutusu.
+function urunGorselHtml(u, sinif) {
+  if (u.image_url) return `<img class="${sinif}" src="${u.image_url}" alt="${u.name}" loading="lazy">`;
+  return `<div class="${sinif === 'urun-detay-gorsel' ? 'urun-yer' : sinif}" style="${sinif === 'urun-detay-gorsel' ? 'max-width:360px' : ''}">Görsel hazırlanıyor</div>`;
+}
 
 // Ana sayfa: tanıtım + ürün grupları teaser + iletişim.
 function anaSayfaHtml(il, sayilar) {
@@ -213,7 +223,7 @@ function grupSayfasiHtml(il, grupKey, urunler) {
   }
   const blok = Object.keys(kategoriler).map(k => {
     const kartlar = kategoriler[k].map(u =>
-      `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urun/${u.slug}"><b>${u.name}</b><span>Teklif için WhatsApp'tan sorun ›</span></a>`
+      `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urun/${u.slug}">${urunGorselHtml(u, 'urun-gorsel')}<b>${u.name}</b><span>Teklif için WhatsApp'tan sorun ›</span></a>`
     ).join('');
     return `<h2>${k}</h2><div class="gruplar">${kartlar}</div>`;
   }).join('');
@@ -234,6 +244,7 @@ function urunSayfasiHtml(il, urun) {
   <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
   <h1 style="color:var(--lacivert);font-size:22px">${urun.name}</h1>
   ${urun.category ? `<p style="color:#51607a;font-size:13px">${urun.category}</p>` : ''}
+  ${urunGorselHtml(urun, 'urun-detay-gorsel')}
   <p>${urun.tanitim || ''}</p>
   <a class="wa-btn" href="https://wa.me/${il.whatsapp}?text=${waMesaj}" target="_blank" rel="noopener">WhatsApp'tan teklif iste</a>
   <p style="margin-top:18px;font-size:13px;color:#51607a">Fiyat ve stok bilgisi bağlayıcı teklif niteliği taşımaz; ürün sipariş üzerine tedarik edilir.</p>

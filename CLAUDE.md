@@ -1,6 +1,6 @@
 # ŞAHLI OTOMOTİV — Proje Referans Dosyası
 
-**Güncel sürüm: v1.2 — 16.11.2026 02:15** (sürüm geçmişi Bölüm 6'da)
+**Güncel sürüm: v1.3 — 16.11.2026 02:20** (sürüm geçmişi Bölüm 6'da)
 
 > Serdar Türkçe konuşur, programcı değildir, telefondan çalışır. Kısa, sade anlat; işe başlamadan ne yapacağını söyle, onay al.
 > **Sohbet başında OKU:** `Ntlextr/seraytekno-API` reposundaki **`ORTAK_NOTLAR.md`** (projeler arası ortak bilgiler) ve **`PANEL_REHBERI.md`** (Seray Tekno panellerinin ortak kuralları).
@@ -22,12 +22,13 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 | 3 | `AracKamera` | Araç Kamera ve Kayıt Sistemleri | Seray Tekno (kendi D1'i, kopyalanacak) + Digimaksi.com | kategori taslağı hazır, ürün girilmedi |
 | 4 | `Mobass` | Oto Ses Sistemleri | mobass.com.tr/tr/urunler | kategori taslağı hazır (34 amfi, 11 subwoofer, hoparlörler, kablolar, kabinler), ürün girilmedi |
 | 5 | `Audiobus` | Ticari Araç Elektroniği | audiobus.com/nsite/catalogo (1469 ürün, 30 sayfa — çoğu OTOBÜS/midibüs odaklı) | sadece genel-amaçlı alt küme alınacak (kamera/monitör, aydınlatma, ses/anten, güç); otobüse özel olanlar (Destino tabela, yangın söndürücü, SWF panel) dışarıda |
-| 6 | `Haksev` | Ambalaj ve Sevkiyat Malzemeleri | haksevambalaj.com.tr (Bursa, ambalaj malzemeleri — bant, naylon, karton, çember, plastik kasa, kimyasal, polietilen köpük) | Güven onayladı: sipariş üzerine tedarik ediliyor, kataloğa dahil |
+| 6 | `Haksev` | Ambalaj ve Sevkiyat Malzemeleri | evambalaj.com.tr (Bursa, ambalaj malzemeleri — bant, naylon, karton, çember, plastik kasa, kimyasal, polietilen köpük) | Güven onayladı: sipariş üzerine tedarik ediliyor, kataloğa dahil |
 
 **Erişim notu:** direnc.net, audiobus.com, mobass.com.tr, digimaksi.com WebFetch ile erişilebildi (16.11.2026 akşamı). haksevambalaj.com.tr sayfaları meta açıklama dışında ürün listesi vermiyor — Serdar'ın gönderdiği ekran görüntüsünden kategori adları alındı.
 
 - **HİÇBİR ÜRÜNDE FİYAT YOK** (Güven onayladı). Ürün sayfasında "Teklif iste / WhatsApp'tan sor" (firma adı, yetkili, adet → WhatsApp) — henüz kodlanmadı.
-- Ürün metinleri kendi cümlelerimizle yazılır (üreticinin/tedarikçinin metni kopyalanmaz); teknik özellikler tablo olarak alınabilir. Görseller için bayiden izin / XML istenir; izin yoksa sade yer tutucu.
+- Ürün metinleri kendi cümlelerimizle yazılır (üreticinin/tedarikçinin metni kopyalanmaz); teknik özellikler tablo olarak alınabilir.
+- **Görseller (16.11.2026, Serdar: "izin sıkıntısı yok, Güven kendi resmini koyacak"):** gerçek fotoğraflar bayiden izinsiz kullanılmaz ama bu bir engel değil — Güven ürünlerin kendi fotoğrafını çekip ekleyecek. `products.image_url` (ve çoklu görsel için `product_images`) zaten hazır; dolu olan ürünlerde site otomatik gerçek fotoğrafı gösterir (`urunGorselHtml`), boş olanlarda sade "Görsel hazırlanıyor" kutusu çıkar — kategoriye göre uydurma simge/ikon KULLANILMAZ.
 - **Logo: "Nazar jant"** — nazar boncuğu renkleriyle tekerlek jantı amblemi + "ŞAHLI / OTOMOTİV / Elektrik · Elektronik · Tedarik". Dosyalar `marka/` klasöründe. Renkler: lacivert #0A3F94, açık mavi #5BB8E8, koyu #0B1B3D, yazı mavi #2A8FD0. SVG'si küçük (worker.js'e doğrudan gömülü, dosya sunmaya gerek yok).
 
 ## 3. Altyapı (16.11.2026'da kuruldu)
@@ -47,6 +48,7 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 - **Henüz YOK:** panel (ürün/kategori ekleme), diğer 5 grubun ürün verisi, teklif formu (firma adı/yetkili/adet → D1), R2 görsel deposu, personel/giriş sistemi, yasal sayfalar (KVKK, kullanım koşulları).
 
 ## 5. Sırada (öncelik sırasıyla)
+0. **Ürün fotoğrafları** — Güven kendi çektiği fotoğrafları gönderdikçe panelden/elle `products.image_url` (ya da `product_images`) alanına girilecek; altyapı hazır, panel henüz yok (bkz. madde 2).
 1. **Kalan 5 grubun ürün/kategori verisi** — Direnç, Şinasi/MTA, Araç Kamera (Seray Tekno + Digimaksi), Mobass, Audiobus; Haksev'deki yöntemle (kategori + temsilci ürün, gerçek kaynağa dayalı, uydurma detay yok).
 2. **Panel** — seraytekno-API'nin `panel_sunucu.js` + `/v2/panel` düzeninden uyarlanacak: giriş, ürün/kategori ekleme, R2 görsel yükleme. `PANEL_REHBERI.md` henüz okunmadı — panel işine başlamadan önce okunacak.
 3. **Teklif formu / WhatsApp akışı** — ürün sayfasında firma adı + yetkili + adet alıp hem `teklif_talep` tablosuna yazan hem WhatsApp'a hazır mesaj gönderen gerçek form (şu an sadece hazır mesajlı WhatsApp linki var).
@@ -54,6 +56,7 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 5. Alan adı bağlanınca: custom domain, e-posta yönlendirme, yasal sayfalar (satıcı = Şahlı Otomotiv Ltd. Şti. olduğu için "faturalı satış" yazılabilir).
 
 ## 6. Sürüm geçmişi
+- **v1.3 — 16.11.2026 02:20** — Ürün görseli altyapısı: `image_url` doluysa kartta/ürün sayfasında gerçek fotoğraf gösteriliyor, boşsa sade "Görsel hazırlanıyor" kutusu (kategoriye göre uydurma ikon yok — Serdar: izin sorunu yok, Güven kendi fotoğrafını ekleyecek). Haksev taksonomi tablosundaki kaynak adresi `evambalaj.com.tr` olarak düzeltildi.
 - **v1.2 — 16.11.2026 02:15** — `/urunlerimiz?grup=..` ve `/urun/<slug>` eklendi (kategoriye göre gruplanmış ürün listesi + tek ürün sayfası, WhatsApp'tan teklif). Haksev grubuna 9 kategori + temsilci ürün verisi D1'e girildi (ilk gerçek ürün verisi — diğer 5 grup hâlâ "Yakında"). Haksev'in gerçek adresinin `evambalaj.com.tr` olduğu doğrulandı. Deploy sırasında bir UTF-8/base64 kodlama hatası (Türkçe karakterler bozuluyordu) fark edilip düzeltildi.
 - **v1.1 — 16.11.2026 01:35** — Vergi levhası doğrulandı (tüzel kişilik, adres). 6 ürün grubu kesinleşti (Direnç, Şinasi/MTA, Araç Kamera [Seray Tekno+Digimaksi], Mobass, Audiobus, Haksev). Worker `sahliotomotiv-js` + D1 `sahliotomotiv-db` kuruldu, Adım 1 (tanıtım+iletişim sayfası + ürün grupları teaser) canlıya alındı: https://sahliotomotiv-js.serdarcirak.workers.dev/
 - **v1.0 — 15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Güven'in yazışmasından iş modeli notları, tedarikçi bağlantıları, karar: Teknolojik Ürünler gibi fiyatsız katalog. Logo "Nazar jant" seçildi.

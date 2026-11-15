@@ -39,6 +39,13 @@
 4. Satılan markalar (Şinasi, For-X, Mobas, Tesa…) — marka adları sitede kullanılabilir mi?
 5. Vergi / unvan bilgisi (yasal metinler ve "faturalı satış" yazısı için).
 
+## 3b. KARAR (Serdar, 16.11.2026 00:03) — ESAS ALINACAK
+- Site = **hafif e-ticaret / katalog**, seraytekno.com'daki **Teknolojik Ürünler** bölümünün aynısı (kod: `Ntlextr/seraytekno-API` → `public/v2/ortak.js` vitrin/liste/ürün sayfası, `panel_sunucu.js` ürün paneli, worker.js `v2Isle`; D1 `products`, `categories`, `product_images`; ürün grupları `products.grup`). Oradan uyarlanarak kurulur, sıfırdan yazılmaz.
+- **HİÇBİR ÜRÜNDE FİYAT YOK.** Ürün sayfasında "Teklif iste / WhatsApp'tan sor" (firma adı, yetkili, adet → WhatsApp). Müşteriler tüzel kişi.
+- Ürünler Güven'in çalıştığı firmaların sitelerinden **kategori bazında** eklenecek (Mobass, AudioBus, direnc.net, Haksev Ambalaj, digimaksi + 2025 fiyat listesi PDF'indeki ürünler; Seray Tekno kameraları ayrı grup). Tedarikçi firma adı sitede "grup / marka" olarak görünebilir ama toptancının adı ve fiyatı yazılmaz.
+- Ürün metinleri kendi cümlelerimizle yazılır (üreticinin metni kopyalanmaz); teknik özellikler tablo olarak alınabilir. Görseller için bayiden izin / XML istenir; izin yoksa ürünün kendi görseli yerine sade yer tutucu.
+- Panel: Güven (Yönetici) kategori ve ürün ekler/düzenler; Şahlı Grup Panel kartı (talepler, WhatsApp tıklamaları) ve "Panele gir".
+
 ## 4. Plan (onay bekliyor)
 - **1. adım:** tanıtım + iletişim sayfası (adres, harita, telefon, WhatsApp, çalışma saatleri, ne satıyoruz). Hızlı yayın.
 - **2. adım:** ürün kataloğu (seraytekno.com'daki Teknolojik Ürünler düzeni örnek: kategoriler, arama, ürün sayfası, "WhatsApp'tan fiyat sor"; fiyat gizli/görünür ayarı), panelden ürün ekleme, Excel'den toplu yükleme (Developer).
@@ -46,4 +53,4 @@
 - Şahlı Grup Panel kartı site açılınca bağlanır (özet: talepler, WhatsApp tıklamaları).
 
 ## 5. Sürüm geçmişi
-- **15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Gece: Güven'in yazışmasından iş modeli notları (1b).
+- **15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Gece: Güven'in yazışmasından iş modeli notları (1b), tedarikçi bağlantıları, karar (3b): Teknolojik Ürünler gibi fiyatsız katalog.

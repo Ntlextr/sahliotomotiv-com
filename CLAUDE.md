@@ -1,62 +1,55 @@
 # ŞAHLI OTOMOTİV — Proje Referans Dosyası
 
-**Oluşturma: 15.11.2026** · Geliştirici: Seray Tekno Yazılım (Serdar Çırak)
+**Güncel sürüm: v1.1 — 16.11.2026 01:35** (sürüm geçmişi Bölüm 6'da)
 
 > Serdar Türkçe konuşur, programcı değildir, telefondan çalışır. Kısa, sade anlat; işe başlamadan ne yapacağını söyle, onay al.
 > **Sohbet başında OKU:** `Ntlextr/seraytekno-API` reposundaki **`ORTAK_NOTLAR.md`** (projeler arası ortak bilgiler) ve **`PANEL_REHBERI.md`** (Seray Tekno panellerinin ortak kuralları).
 > ⚠️ **Bu repo PUBLIC.** Şifre, anahtar, IBAN, müşteri bilgisi, alış fiyatı, tedarikçi fiyat listesi BURAYA YAZILMAZ / KONMAZ.
 
 ## 1. İşletme
-- **Sahibi:** Güven Şahlı (Serdar'ın yeğeni). Aynı kişinin diğer işleri: Luxury Beauty Center (güzellik salonu), Şahlı Harası – BÜYÜKDÜNYA (buyukdunya.com). Hepsi **Şahlı Grup Panel**'de (grup.buyukdunya.com) toplanır — Şahlı Otomotiv kartı şimdilik "Yakında".
-- **Ne iş yapar (Güven, 15.11.2026):** araçların elektrik ve elektronik aksamlarını satar — sigortadan kabloya, araç kamerasından ses ve görüntü sistemine kadar. Özellikle **VIP araç yapımında** kullanılan elektrik-elektronik malzemeler. Büyük toptancılardan alır (ör. Şinasi Otomotiv'in sigorta ürünleri, For-X, Mobas ürünleri, Tesa bant / tüylü bant).
-- Güven'in isteği: "Sahliotomotiv için bir site yapalım, en azından adres belli olsun." Serdar'ın önerisi: **light e-ticaret** — ürün listesi, müşteri WhatsApp'tan sipariş versin. Güven: "Senin ürünlerini de (Seray Tekno kamera vb.) ekle, ürün portföyü genişler."
+- **Sahibi:** Güven Şahlı (Serdar'ın yeğeni). Aynı kişinin diğer işleri: Luxury Beauty Center (güzellik salonu, aynı adreste), Şahlı Harası – BÜYÜKDÜNYA (buyukdunya.com). Hepsi **Şahlı Grup Panel**'de (grup.buyukdunya.com) toplanır — Şahlı Otomotiv kartı şimdilik "Yakında".
+- **Tüzel kişilik (16.11.2026, vergi levhasından doğrulandı):** ŞAHLI OTOMOTİV ELEKTRİK ELEKTRONİK İTHALAT İHRACAT SANAYİ VE TİCARET LİMİTED ŞİRKETİ. Vergi Dairesi Erenköy, işe başlama 04.11.2025, kurumlar vergisi, faaliyet kodu 467212 (motorlu kara taşıtı parçalarının toptan ticareti — cam/lastik/jant/motosiklet hariç). Luxury Beauty Center ile sadece ADRES ortak, tüzel kişilik ayrı. Adres: **19 Mayıs Mah. Yamaç Sk. Şeref Yazgan İş Merkezi No:1 İç Kapı No:8, Kadıköy/İstanbul**.
+- **Ne iş yapar:** araçların elektrik ve elektronik aksamlarını satar — sigortadan kabloya, araç kamerasından ses ve görüntü sistemine kadar. Özellikle **VIP araç yapımında** kullanılan elektrik-elektronik malzemeler. Stok tutmuyor: talep geliyor, ürünü bulup tedarik ediyor. Müşterilerin hepsi tüzel kişi (B2B).
+- **WhatsApp / iletişim numarası: +90 532 408 29 99** (Güven Bey'in kendi numarası).
 
-## 1b. Güven ile yazışma (15.11.2026 gece, ekran görüntüsünden)
-- **Stok tutmuyor:** talep geliyor, ürünü bulup satıyor. Asıl iş araç elektrik-elektronik ama onunla sınırlı değil: sanayi tipi tuvalet kâğıdı, eldiven, iş elbisesi, dezenfekte kireci; yakında arı poleni ve mantardan probiyotik, amino asit; tahin, helva; market / şarküteri ürünleri.
-- Çalıştığı firmalar: **Direnç, Şinasi, Mobass** (bağlantıları aşağıda; ayrıca "Güncel 2025 Fiyat Listesi 14.02.2025" PDF'ini — 48 sayfa — WhatsApp'tan gönderdi, Serdar dosyayı yeni projeye yükleyecek).
-- **Güven'in gönderdiği bağlantılar (tam adresler):**
-  - https://www.direnc.net/
-  - https://www.mobass.com.tr/tr/urunler
-  - https://audiobus.com/nsite/catalogo/
-  - https://haksevambalaj.com.tr/
-  - https://digimaksi.com/
-- **İnceleme notları (web aramasıyla; siteler doğrudan açılamadı):**
-  - direnc.net — elektronik komponent mağazası (Arduino, sensör, kablo, ölçü aleti, havya); "Toptan Satış" bölümü var; sitede fiyatlı satış.
-  - mobass.com.tr/tr/urunler — Mobass oto ses: amfi, midrange/tweeter hoparlör, subwoofer, ses işlemcisi (DSP), ekolayzır; For-X serisi de Mobass'ın.
-  - audiobus.com/nsite/catalogo — AudioBus (İspanya): otobüs/VIP araç için yolcu ses-görüntü sistemleri, araç kameraları, USB şarj, LED aydınlatma, sinyalizasyon (Busworld Türkiye'de katılımcı) → VIP araç işiyle doğrudan ilgili.
-  - haksevambalaj.com.tr ve digimaksi.com — aramada bilgi çıkmadı (Haksev Ambalaj: muhtemelen sarf / ambalaj ürünleri; Serdar'dan teyit).
-  - "Güncel 2025 Fiyat Listesi 14.02.2025.pdf" (48 sayfa, 4,3 MB) — hangi firmanın olduğu belli değil; Serdar'dan dosya olarak istenecek (sadece kategori/ürün adı için, fiyat kullanılmaz).
-- Kategori taslağı: Oto Ses ve Görüntü (amfi, hoparlör, ekran, kamera) · Araç Elektrik (sigorta, kablo, röle, bağlantı) · VIP / Ticari Araç Donanımı (yolcu ses-görüntü, USB şarj, LED) · Elektronik Komponent ve Ölçü · Sanayi ve İş Güvenliği Sarf (eldiven, iş elbisesi, kâğıt, temizlik) · Doğal Gıda (tahin, helva, arı poleni…) · Güvenlik Kameraları (Seray Tekno ürünleri).
-- Ürünleri bilgisayarında var ama "onlarla sınırlı kalmak istemiyorum".
-- **Sitede hiç fiyat yazılmayacak** (Güven: "Bence hiç fiyat yazmayalım"). **Müşterilerin hepsi tüzel kişi (firma)** → B2B katalog: "Teklif iste / WhatsApp'tan sor"; teklif formunda firma adı, yetkili, telefon.
-- Serdar'ın önerisi: toptancıların bayi panelinde XML ürün listesi varsa ürünler oradan çekilir; yoksa kategori + ürün hazır şablonla çoğaltılır; Güven panelden kategori/ürün ekler. (B2B bayi paneli / XML var mı — cevap bekleniyor.)
-- **Logo SEÇİLDİ (16.11.2026): "Nazar jant"** — nazar boncuğu renkleriyle tekerlek jantı amblemi + "ŞAHLI / OTOMOTİV / Elektrik · Elektronik · Tedarik". Dosyalar `marka/` klasöründe (logo açık/koyu zemin PNG+SVG, simge 512/1024, favicon, 1080 profil resmi). Renkler: lacivert #0A3F94, açık mavi #5BB8E8, göz bebeği #0B1B3D, yazı mavi #2A8FD0 (koyu zeminde #8FD3FF), beyaz. Yazı tipi Inter Display Black / Inter Bold. SVG'lerde yazı Inter yazı tipine bağlı; sitede PNG ya da Inter yüklü olarak kullanılır.
-- Not: toptancının fiyat listesi ve katalog görselleri izinsiz yayınlanmaz; fiyat zaten gösterilmeyecek, görseller için bayi izni / XML'deki resim kullanım hakkı sorulmalı.
+## 2. Ürün kaynakları ve 6 grup (16.11.2026 — ESAS ALINACAK)
+Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` alanında iç referans olarak durur, ön yüzde sadece nötr grup başlığı görünür (`site_icerik.magaza_gruplar`, seraytekno.com'daki ürün grubu mekanizmasının aynısı).
 
-## 2. Alan adı ve e-posta
-- **sahliotomotiv.com** alındı, Cloudflare'e **transfer sürecinde** (15.11.2026). Henüz Cloudflare hesabında bölge (zone) yok.
-- Bölge aktif olunca: Cloudflare Email Routing → `bilgi@sahliotomotiv.com` → `guven.sahli@gmail.com` (bu Gmail Cloudflare'de zaten doğrulanmış; buyukdunya.com'da aynı kural var).
-- Grup paneline ileride `merkez.sahliotomotiv.com` adı da bağlanabilir (bkz. buyukdunya-com/sahli-grup/README.md).
+| # | Panel `grup` | Ön yüzde görünen ad | Gerçek kaynak | Durum |
+|---|---|---|---|---|
+| 1 | `Direnc` | Elektrik ve Elektronik Komponentler | direnc.net | kategori taslağı hazır, ürün girilmedi |
+| 2 | `Sinasi` | Araç Sigorta ve Elektrik Parçaları | Şinasi/MTA/PNH "Güncel 2025 Fiyat Listesi" PDF'i (48 syf) | kategori taslağı hazır (araç-ilgili alt küme), ürün girilmedi |
+| 3 | `AracKamera` | Araç Kamera ve Kayıt Sistemleri | Seray Tekno (kendi D1'i, kopyalanacak) + Digimaksi.com | kategori taslağı hazır, ürün girilmedi |
+| 4 | `Mobass` | Oto Ses Sistemleri | mobass.com.tr/tr/urunler | kategori taslağı hazır (34 amfi, 11 subwoofer, hoparlörler, kablolar, kabinler), ürün girilmedi |
+| 5 | `Audiobus` | Ticari Araç Elektroniği | audiobus.com/nsite/catalogo (1469 ürün, 30 sayfa — çoğu OTOBÜS/midibüs odaklı) | sadece genel-amaçlı alt küme alınacak (kamera/monitör, aydınlatma, ses/anten, güç); otobüse özel olanlar (Destino tabela, yangın söndürücü, SWF panel) dışarıda |
+| 6 | `Haksev` | Ambalaj ve Sevkiyat Malzemeleri | haksevambalaj.com.tr (Bursa, ambalaj malzemeleri — bant, naylon, karton, çember, plastik kasa, kimyasal, polietilen köpük) | Güven onayladı: sipariş üzerine tedarik ediliyor, kataloğa dahil |
 
-## 3. Bekleyen bilgiler (Güven'den)
-1. Açık adres, Google Haritalar konum bağlantısı, telefon / WhatsApp, çalışma saatleri.
-2. Logo, dükkân / ürün fotoğrafları.
-3. Ürün listesi (Excel ya da stok listesi): ürün adı, marka, kategori; fiyat sitede gösterilecek mi?
-4. Satılan markalar (Şinasi, For-X, Mobas, Tesa…) — marka adları sitede kullanılabilir mi?
-5. Vergi / unvan bilgisi (yasal metinler ve "faturalı satış" yazısı için).
+**Erişim notu:** direnc.net, audiobus.com, mobass.com.tr, digimaksi.com WebFetch ile erişilebildi (16.11.2026 akşamı). haksevambalaj.com.tr sayfaları meta açıklama dışında ürün listesi vermiyor — Serdar'ın gönderdiği ekran görüntüsünden kategori adları alındı.
 
-## 3b. KARAR (Serdar, 16.11.2026 00:03) — ESAS ALINACAK
-- Site = **hafif e-ticaret / katalog**, seraytekno.com'daki **Teknolojik Ürünler** bölümünün aynısı (kod: `Ntlextr/seraytekno-API` → `public/v2/ortak.js` vitrin/liste/ürün sayfası, `panel_sunucu.js` ürün paneli, worker.js `v2Isle`; D1 `products`, `categories`, `product_images`; ürün grupları `products.grup`). Oradan uyarlanarak kurulur, sıfırdan yazılmaz.
-- **HİÇBİR ÜRÜNDE FİYAT YOK.** Ürün sayfasında "Teklif iste / WhatsApp'tan sor" (firma adı, yetkili, adet → WhatsApp). Müşteriler tüzel kişi.
-- Ürünler Güven'in çalıştığı firmaların sitelerinden **kategori bazında** eklenecek (Mobass, AudioBus, direnc.net, Haksev Ambalaj, digimaksi + 2025 fiyat listesi PDF'indeki ürünler; Seray Tekno kameraları ayrı grup). Tedarikçi firma adı sitede "grup / marka" olarak görünebilir ama toptancının adı ve fiyatı yazılmaz.
-- Ürün metinleri kendi cümlelerimizle yazılır (üreticinin metni kopyalanmaz); teknik özellikler tablo olarak alınabilir. Görseller için bayiden izin / XML istenir; izin yoksa ürünün kendi görseli yerine sade yer tutucu.
-- Panel: Güven (Yönetici) kategori ve ürün ekler/düzenler; Şahlı Grup Panel kartı (talepler, WhatsApp tıklamaları) ve "Panele gir".
+- **HİÇBİR ÜRÜNDE FİYAT YOK** (Güven onayladı). Ürün sayfasında "Teklif iste / WhatsApp'tan sor" (firma adı, yetkili, adet → WhatsApp) — henüz kodlanmadı.
+- Ürün metinleri kendi cümlelerimizle yazılır (üreticinin/tedarikçinin metni kopyalanmaz); teknik özellikler tablo olarak alınabilir. Görseller için bayiden izin / XML istenir; izin yoksa sade yer tutucu.
+- **Logo: "Nazar jant"** — nazar boncuğu renkleriyle tekerlek jantı amblemi + "ŞAHLI / OTOMOTİV / Elektrik · Elektronik · Tedarik". Dosyalar `marka/` klasöründe. Renkler: lacivert #0A3F94, açık mavi #5BB8E8, koyu #0B1B3D, yazı mavi #2A8FD0. SVG'si küçük (worker.js'e doğrudan gömülü, dosya sunmaya gerek yok).
 
-## 4. Plan (onay bekliyor)
-- **1. adım:** tanıtım + iletişim sayfası (adres, harita, telefon, WhatsApp, çalışma saatleri, ne satıyoruz). Hızlı yayın.
-- **2. adım:** ürün kataloğu (seraytekno.com'daki Teknolojik Ürünler düzeni örnek: kategoriler, arama, ürün sayfası, "WhatsApp'tan fiyat sor"; fiyat gizli/görünür ayarı), panelden ürün ekleme, Excel'den toplu yükleme (Developer).
-- Altyapı önerisi: Cloudflare Worker + D1 + R2 (diğer projelerle aynı yapı), Workers Builds ile `main`'e her gönderimde yayın.
-- Şahlı Grup Panel kartı site açılınca bağlanır (özet: talepler, WhatsApp tıklamaları).
+## 3. Altyapı (16.11.2026'da kuruldu)
+- **Worker:** `sahliotomotiv-js` (tek dosya, Cloudflare API ile doğrudan deploy edildi — repo→Workers Builds bağlantısı HENÜZ YOK, bkz. Bölüm 5).
+- **D1:** `sahliotomotiv-db` (id `f7e89686-0db0-4a78-8e40-af5a4fc80e4d`, binding `DB`). Tablolar: `products`, `product_images`, `categories`, `site_icerik`, `teklif_talep` — seraytekno-API'nin v2 şemasından uyarlandı (Bölüm "D1 Şeması" aşağıda).
+- **Geçici adres (alan adı transferi bitene kadar):** https://sahliotomotiv-js.serdarcirak.workers.dev/
+- **Alan adı:** sahliotomotiv.com Cloudflare'e transfer sürecinde, henüz bölge (zone) yok. Bölge açılınca: custom domain bağlanır (www + apex), Email Routing `bilgi@sahliotomotiv.com` → `guven.sahli@gmail.com`, ve bu repo için Workers Builds tetiği kurulup `main`'e her commit'te otomatik yayın başlar (şu an manuel deploy ediliyor).
+- **D1 Şeması (site_icerik anahtarları):** `magaza_gruplar` (JSON, grup→nötr ad eşlemesi), `iletisim` (unvan, telefon, whatsapp, adres, çalışma saatleri).
 
-## 5. Sürüm geçmişi
-- **15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Gece: Güven'in yazışmasından iş modeli notları (1b), tedarikçi bağlantıları, karar (3b): Teknolojik Ürünler gibi fiyatsız katalog.
+## 4. Site — mevcut durum (v1.1)
+- **Ana sayfa (`/`):** hero tanıtım yazısı, 6 ürün grubu kartı (nötr başlıklarla, her birinde "Yakında" ya da aktif ürün sayısı), iletişim kutusu (unvan, adres + Google Haritalar linki, telefon, çalışma saatleri, WhatsApp düğmesi), sağ altta yüzen WhatsApp balonu.
+- **`/urunlerimiz`:** 6 grup için teaser sayfa ("Ürün listesi hazırlanıyor"). Henüz kategori/ürün/teklif formu yok.
+- **`/robots.txt`, `/sitemap.xml`:** basit, hazır.
+- **Henüz YOK:** panel (ürün/kategori ekleme), gerçek ürün verisi, ürün detay sayfası, teklif formu, R2 görsel deposu, personel/giriş sistemi, yasal sayfalar (KVKK, kullanım koşulları).
+
+## 5. Sırada (öncelik sırasıyla)
+1. **Workers Builds / GitHub bağlantısı** — alan adı bölgesi açılınca Cloudflare dashboard'dan `main`'e push → otomatik yayın bağlanacak (seraytekno-API'deki gibi). Şimdilik her değişiklik Cloudflare API ile manuel deploy ediliyor.
+2. **Panel** — seraytekno-API'nin `panel_sunucu.js` + `/v2/panel` düzeninden uyarlanacak: giriş, ürün/kategori ekleme, R2 görsel yükleme.
+3. **Gerçek ürün verisi** — 6 gruptan kategori kategori ürün girişi (Bölüm 2'deki taslaktan).
+4. **Teklif formu / WhatsApp akışı** — ürün sayfasında firma adı + yetkili + adet → WhatsApp'a hazır mesaj.
+5. Alan adı bağlanınca: custom domain, e-posta yönlendirme, yasal sayfalar (satıcı = Şahlı Otomotiv Ltd. Şti. olduğu için "faturalı satış" yazılabilir).
+
+## 6. Sürüm geçmişi
+- **v1.1 — 16.11.2026 01:35** — Vergi levhası doğrulandı (tüzel kişilik, adres). 6 ürün grubu kesinleşti (Direnç, Şinasi/MTA, Araç Kamera [Seray Tekno+Digimaksi], Mobass, Audiobus, Haksev). Worker `sahliotomotiv-js` + D1 `sahliotomotiv-db` kuruldu, Adım 1 (tanıtım+iletişim sayfası + ürün grupları teaser) canlıya alındı: https://sahliotomotiv-js.serdarcirak.workers.dev/
+- **v1.0 — 15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Güven'in yazışmasından iş modeli notları, tedarikçi bağlantıları, karar: Teknolojik Ürünler gibi fiyatsız katalog. Logo "Nazar jant" seçildi.

@@ -11,6 +11,23 @@ const RENK = {
   yaziMavi: '#2A8FD0',
 };
 
+// "Nazar jant" logosu — sade SVG, dosya sunmaya gerek kalmadan sayfaya gömülü.
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" width="152" height="44" role="img" aria-label="Şahlı Otomotiv">
+  <g transform="translate(110 110)">
+    <circle r="90" fill="#0A3F94"/><circle r="66" fill="#FFFFFF"/><circle r="46" fill="#5BB8E8"/><circle r="24" fill="#0B1B3D"/>
+    <g stroke="#0A3F94" stroke-width="6" stroke-linecap="round" opacity=".9">
+      <line x1="0" y1="-26" x2="0" y2="-44"/><line x1="25" y1="8" x2="42" y2="14"/><line x1="-25" y1="8" x2="-42" y2="14"/>
+      <line x1="15" y1="21" x2="26" y2="36"/><line x1="-15" y1="21" x2="-26" y2="36"/>
+    </g>
+    <circle cx="-8" cy="-9" r="7" fill="#FFFFFF" opacity=".9"/>
+  </g>
+  <text x="228" y="104" font-family="Arial,sans-serif" font-weight="900" font-size="84" fill="#0A3F94">ŞAHLI</text>
+  <text x="232" y="160" font-family="Arial,sans-serif" font-weight="700" font-size="38" letter-spacing="12" fill="#2A8FD0">OTOMOTİV</text>
+  <text x="232" y="194" font-family="Arial,sans-serif" font-weight="500" font-size="16" letter-spacing="4" fill="#5B6B80">ELEKTRİK · ELEKTRONİK · TEDARİK</text>
+</svg>`;
+
+const FAVICON_B64 = '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';
+
 // Sitenin en üst bilgisi: D1'deki site_icerik tablosundan okunur.
 // Tablo boşsa (ilk kurulum) buradaki varsayılanlar kullanılır.
 const VARSAYILAN_ILETISIM = {
@@ -55,7 +72,7 @@ function kabukAc(baslik, aciklama) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${baslik}</title>
 <meta name="description" content="${aciklama}">
-<link rel="icon" href="/favicon.ico">
+<link rel="icon" href="data:image/png;base64,${FAVICON_B64}">
 <style>
   :root{
     --lacivert:${RENK.lacivert}; --acik-mavi:${RENK.acikMavi}; --koyu:${RENK.koyu}; --yazi-mavi:${RENK.yaziMavi};
@@ -84,7 +101,7 @@ function kabukAc(baslik, aciklama) {
 </head>
 <body>
 <header>
-  <a href="/"><img src="/assets/logo.png" alt="Şahlı Otomotiv"></a>
+  <a href="/" style="display:flex">${LOGO_SVG}</a>
   <nav><a href="/">Ana Sayfa</a><a href="/urunlerimiz">Ürünlerimiz</a><a href="/#iletisim">İletişim</a></nav>
 </header>`;
 }
@@ -166,11 +183,6 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const yol = url.pathname;
-
-    // Statik dosyalar (logo, favicon) — ASSETS binding'ine bırakılır.
-    if (yol.startsWith('/assets/') || yol === '/favicon.ico') {
-      return env.ASSETS.fetch(request);
-    }
 
     if (yol === '/robots.txt') {
       return new Response('User-agent: *\nAllow: /\nSitemap: https://www.sahliotomotiv.com/sitemap.xml\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

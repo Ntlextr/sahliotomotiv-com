@@ -68,7 +68,7 @@ async function grupUrunSayilari(env) {
 async function grupUrunleri(env, grup) {
   try {
     const { results } = await env.DB
-      .prepare("SELECT id, name, slug, category, tanitim FROM products WHERE grup = ? AND durum = 'aktif' ORDER BY category, name")
+      .prepare("SELECT id, name, slug, category, tanitim, image_url FROM products WHERE grup = ? AND durum = 'aktif' ORDER BY category, name")
       .bind(grup).all();
     return results || [];
   } catch (e) {
@@ -101,10 +101,17 @@ function kabukAc(baslik, aciklama) {
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:-apple-system,"Segoe UI",Arial,sans-serif;color:#1a2233;background:#fff;line-height:1.5}
-  header{background:var(--koyu);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
-  header img{height:40px}
-  nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:14px;opacity:.9}
+  header{background:var(--koyu);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;row-gap:10px}
+  header img{height:40px;display:block}
+  nav{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+  nav a{color:#fff;text-decoration:none;font-size:14px;opacity:.9;white-space:nowrap;padding:4px 0}
   nav a:hover{opacity:1}
+  @media (max-width:420px){
+    header{padding:12px 14px}
+    header img{height:32px}
+    nav{gap:3px 10px}
+    nav a{font-size:12.5px}
+  }
   .hero{background:linear-gradient(135deg,var(--koyu),var(--lacivert));color:#fff;padding:48px 20px;text-align:center}
   .hero h1{font-size:28px;margin:0 0 10px}
   .hero p{font-size:16px;opacity:.9;max-width:560px;margin:0 auto}
@@ -239,6 +246,27 @@ function grupSayfasiHtml(il, grupKey, urunler) {
 // hazır mesajla; teklif_talep tablosuna yazan form sonraki sürümde eklenecek).
 function urunSayfasiHtml(il, urun) {
   const waMesaj = encodeURIComponent(`Merhaba, "${urun.name}" ürünü için teklif almak istiyorum.`);
+
+  // Teknik özellikler: products.teknik sütunu JSON {"Başlık": "Değer", ...} olarak tutulur.
+  let teknikHtml = '';
+  if (urun.teknik) {
+    try {
+      const t = JSON.parse(urun.teknik);
+      const satirlar = Object.keys(t).map(k => `<tr><td style="padding:6px 10px;color:#51607a;border-bottom:1px solid #e3e8f0">${k}</td><td style="padding:6px 10px;font-weight:600;border-bottom:1px solid #e3e8f0">${t[k]}</td></tr>`).join('');
+      if (satirlar) teknikHtml = `<h3 style="font-size:15px;color:var(--lacivert);margin-top:18px">Teknik Özellikler</h3><table style="width:100%;border-collapse:collapse;font-size:14px">${satirlar}</table>`;
+    } catch (e) { /* bozuk JSON ise sessizce atla */ }
+  }
+
+  // Özellikler: products.ozellikler sütunu JSON [{"baslik":"...","metin":"..."}] olarak tutulur.
+  let ozellikHtml = '';
+  if (urun.ozellikler) {
+    try {
+      const liste = JSON.parse(urun.ozellikler);
+      const satirlar = (liste || []).map(o => `<li style="margin-bottom:6px"><b>${o.baslik || ''}</b>${o.metin ? ': ' + o.metin : ''}</li>`).join('');
+      if (satirlar) ozellikHtml = `<h3 style="font-size:15px;color:var(--lacivert);margin-top:18px">Öne Çıkan Özellikler</h3><ul style="padding-left:20px;font-size:14px">${satirlar}</ul>`;
+    } catch (e) { /* bozuk JSON ise sessizce atla */ }
+  }
+
   return kabukAc(`${urun.name} — Şahlı Otomotiv`, urun.tanitim || urun.name) + `
 <main>
   <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
@@ -246,6 +274,8 @@ function urunSayfasiHtml(il, urun) {
   ${urun.category ? `<p style="color:#51607a;font-size:13px">${urun.category}</p>` : ''}
   ${urunGorselHtml(urun, 'urun-detay-gorsel')}
   <p>${urun.tanitim || ''}</p>
+  ${ozellikHtml}
+  ${teknikHtml}
   <a class="wa-btn" href="https://wa.me/${il.whatsapp}?text=${waMesaj}" target="_blank" rel="noopener">WhatsApp'tan teklif iste</a>
   <p style="margin-top:18px;font-size:13px;color:#51607a">Fiyat ve stok bilgisi bağlayıcı teklif niteliği taşımaz; ürün sipariş üzerine tedarik edilir.</p>
 </main>` + kabukKapat(il);

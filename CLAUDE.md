@@ -11,6 +11,15 @@
 - **Ne iş yapar (Güven, 15.11.2026):** araçların elektrik ve elektronik aksamlarını satar — sigortadan kabloya, araç kamerasından ses ve görüntü sistemine kadar. Özellikle **VIP araç yapımında** kullanılan elektrik-elektronik malzemeler. Büyük toptancılardan alır (ör. Şinasi Otomotiv'in sigorta ürünleri, For-X, Mobas ürünleri, Tesa bant / tüylü bant).
 - Güven'in isteği: "Sahliotomotiv için bir site yapalım, en azından adres belli olsun." Serdar'ın önerisi: **light e-ticaret** — ürün listesi, müşteri WhatsApp'tan sipariş versin. Güven: "Senin ürünlerini de (Seray Tekno kamera vb.) ekle, ürün portföyü genişler."
 
+## 1b. Güven ile yazışma (15.11.2026 gece, ekran görüntüsünden)
+- **Stok tutmuyor:** talep geliyor, ürünü bulup satıyor. Asıl iş araç elektrik-elektronik ama onunla sınırlı değil: sanayi tipi tuvalet kâğıdı, eldiven, iş elbisesi, dezenfekte kireci; yakında arı poleni ve mantardan probiyotik, amino asit; tahin, helva; market / şarküteri ürünleri.
+- Çalıştığı firmalar: **Direnç, Şinasi, Mobass** (bağlantılarını ve "Güncel 2025 Fiyat Listesi 14.02.2025" PDF'ini — 48 sayfa — WhatsApp'tan gönderdi; ekran görüntüsünden okunamadı, Serdar'dan metin olarak istenecek).
+- Ürünleri bilgisayarında var ama "onlarla sınırlı kalmak istemiyorum".
+- **Sitede hiç fiyat yazılmayacak** (Güven: "Bence hiç fiyat yazmayalım"). **Müşterilerin hepsi tüzel kişi (firma)** → B2B katalog: "Teklif iste / WhatsApp'tan sor"; teklif formunda firma adı, yetkili, telefon.
+- Serdar'ın önerisi: toptancıların bayi panelinde XML ürün listesi varsa ürünler oradan çekilir; yoksa kategori + ürün hazır şablonla çoğaltılır; Güven panelden kategori/ürün ekler. (B2B bayi paneli / XML var mı — cevap bekleniyor.)
+- Logo: soruldu, cevap bekleniyor.
+- Not: toptancının fiyat listesi ve katalog görselleri izinsiz yayınlanmaz; fiyat zaten gösterilmeyecek, görseller için bayi izni / XML'deki resim kullanım hakkı sorulmalı.
+
 ## 2. Alan adı ve e-posta
 - **sahliotomotiv.com** alındı, Cloudflare'e **transfer sürecinde** (15.11.2026). Henüz Cloudflare hesabında bölge (zone) yok.
 - Bölge aktif olunca: Cloudflare Email Routing → `bilgi@sahliotomotiv.com` → `guven.sahli@gmail.com` (bu Gmail Cloudflare'de zaten doğrulanmış; buyukdunya.com'da aynı kural var).
@@ -30,4 +39,4 @@
 - Şahlı Grup Panel kartı site açılınca bağlanır (özet: talepler, WhatsApp tıklamaları).
 
 ## 5. Sürüm geçmişi
-- **15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok).
+- **15.11.2026** — Repo ve bu dosya oluşturuldu (henüz kod yok). Gece: Güven'in yazışmasından iş modeli notları (1b).

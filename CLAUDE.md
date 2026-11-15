@@ -1,6 +1,6 @@
 # ŞAHLI OTOMOTİV — Proje Referans Dosyası
 
-**Güncel sürüm: v1.3 — 16.11.2026 02:20** (sürüm geçmişi Bölüm 6'da)
+**Güncel sürüm: v1.4 — 16.11.2026 02:35** (sürüm geçmişi Bölüm 6'da)
 
 > Serdar Türkçe konuşur, programcı değildir, telefondan çalışır. Kısa, sade anlat; işe başlamadan ne yapacağını söyle, onay al.
 > **Sohbet başında OKU:** `Ntlextr/seraytekno-API` reposundaki **`ORTAK_NOTLAR.md`** (projeler arası ortak bilgiler) ve **`PANEL_REHBERI.md`** (Seray Tekno panellerinin ortak kuralları).
@@ -38,24 +38,31 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 - **Alan adı:** sahliotomotiv.com Cloudflare'e transfer sürecinde, henüz bölge (zone) yok. Bölge açılınca: custom domain bağlanır (www + apex), Email Routing `bilgi@sahliotomotiv.com` → `guven.sahli@gmail.com`, ve bu repo için Workers Builds tetiği kurulup `main`'e her commit'te otomatik yayın başlar (şu an manuel deploy ediliyor).
 - **D1 Şeması (site_icerik anahtarları):** `magaza_gruplar` (JSON, grup→nötr ad eşlemesi), `iletisim` (unvan, telefon, whatsapp, adres, çalışma saatleri).
 
-## 4. Site — mevcut durum (v1.2)
+## 4. Site — mevcut durum (v1.4)
 - **Ana sayfa (`/`):** hero tanıtım yazısı, 6 ürün grubu kartı (nötr başlıklarla; ürünü olan grup tıklanınca `/urunlerimiz?grup=..`'a gider, boş olan "Yakında" yazar), iletişim kutusu (unvan, adres + Google Haritalar linki, telefon, çalışma saatleri, WhatsApp düğmesi), sağ altta yüzen WhatsApp balonu.
 - **`/urunlerimiz`:** grup seçilmemişse 6 grubun teaser listesi; `?grup=Haksev` gibi bir grup seçilince o grubun kategorilerine göre gruplanmış gerçek ürün kartları.
-- **`/urun/<slug>`:** tek ürün sayfası — tanıtım metni + "WhatsApp'tan teklif iste" düğmesi (ürün adını içeren hazır mesajla). `teklif_talep` tablosuna yazan form henüz yok, doğrudan WhatsApp'a yönlendiriyor.
-- **Haksev (Ambalaj ve Sevkiyat Malzemeleri) grubu — veri girildi (16.11.2026):** 9 kategori (Tesa Bant Ürünleri, Ambalaj Bantları, Ambalaj Naylonları, Streç Film, Karton Ambalaj Ürünleri, Çemberleme Ürünleri, Plastik Kasalar ve Paletler, Kimyasal Ambalajları, Polietilen Köpük Ambalaj) — kategori başına bir temsilci ürün kaydı, genel/doğru tanıtım metniyle (uydurma teknik özellik/model yok). Haksev'in gerçek adresi `evambalaj.com.tr` (Serdar'ın ekran görüntüsünden doğrulandı); `haksevambalaj.com.tr` değil.
-- **Diğer 5 grup (Direnç, Şinasi/MTA, Araç Kamera, Mobass, Audiobus) hâlâ "Yakında"** — ürün verisi sırayla girilecek.
+- **`/urun/<slug>`:** tek ürün sayfası — tanıtım metni + görsel (image_url doluysa gerçek fotoğraf, boşsa "Görsel hazırlanıyor") + "WhatsApp'tan teklif iste" düğmesi (ürün adını içeren hazır mesajla). `teklif_talep` tablosuna yazan form henüz yok, doğrudan WhatsApp'a yönlendiriyor.
+- **5 grup — veri girildi (16.11.2026):**
+  - **Haksev** (Ambalaj ve Sevkiyat Malzemeleri): 9 kategori, kaynak `evambalaj.com.tr`.
+  - **Direnc** (Elektrik ve Elektronik Komponentler): 7 kategori (Röle, Klemens, Konnektör, Buton ve Anahtar, Kablo Çeşitleri, Sigorta ve Yuvaları, İzolasyon ve Bant Ürünleri), kaynak direnc.net (sitenin Arduino/geliştirme kartı gibi hobi kategorileri DIŞARIDA — sadece araç elektriğiyle örtüşen pasif komponent/bağlantı kategorileri alındı).
+  - **AracKamera** (Araç Kamera ve Kayıt Sistemleri): 7 kategori, kaynak digimaksi.com + Seray Tekno'nun kendi D1'indeki (seraytekno-db) mevcut araç kamerası kataloğu (ürün adlarında gerçek tedarikçi/marka adı — "Pulnix" — KULLANILMADI, sadece ürün tipi genel adla yazıldı).
+  - **Mobass** (Oto Ses Sistemleri): 8 kategori, kaynak mobass.com.tr (sitede ürünü olmayan başlıklar — OEM hoparlör, marin, teyp, multimedya/navigasyon vb. — alınmadı).
+  - **Audiobus** (Ticari Araç Elektroniği): 5 kategori, kaynak audiobus.com'un genel-amaçlı bölümleri (kamera/monitör, aydınlatma, ses, güç/enerji, wifi router); otobüse özel olanlar (tabela, yangın söndürücü, SWF panel, OAS) dışarıda bırakıldı.
+  - Her kategoride Haksev'deki yöntemle kategori + bir temsilci ürün kaydı, genel/doğru tanıtım metniyle (uydurma teknik özellik/model yok).
+- **Şinasi/MTA grubu hâlâ "Yakında"** — kaynak 48 sayfalık bir PDF fiyat listesi; bu ortamda dosyaya erişim yok, Serdar'ın PDF'i yeniden eklemesi/yüklemesi gerekiyor.
 - **`/robots.txt`, `/sitemap.xml`:** basit, hazır.
-- **Henüz YOK:** panel (ürün/kategori ekleme), diğer 5 grubun ürün verisi, teklif formu (firma adı/yetkili/adet → D1), R2 görsel deposu, personel/giriş sistemi, yasal sayfalar (KVKK, kullanım koşulları).
+- **Henüz YOK:** panel (ürün/kategori ekleme), Şinasi/MTA grubu verisi, teklif formu (firma adı/yetkili/adet → D1), R2 görsel deposu, personel/giriş sistemi, yasal sayfalar (KVKK, kullanım koşulları).
 
 ## 5. Sırada (öncelik sırasıyla)
 0. **Ürün fotoğrafları** — Güven kendi çektiği fotoğrafları gönderdikçe panelden/elle `products.image_url` (ya da `product_images`) alanına girilecek; altyapı hazır, panel henüz yok (bkz. madde 2).
-1. **Kalan 5 grubun ürün/kategori verisi** — Direnç, Şinasi/MTA, Araç Kamera (Seray Tekno + Digimaksi), Mobass, Audiobus; Haksev'deki yöntemle (kategori + temsilci ürün, gerçek kaynağa dayalı, uydurma detay yok).
+1. **Şinasi/MTA grubunun ürün/kategori verisi** — PDF fiyat listesi Serdar'dan yeniden istenecek/yüklenecek; diğer 5 grup tamamlandı.
 2. **Panel** — seraytekno-API'nin `panel_sunucu.js` + `/v2/panel` düzeninden uyarlanacak: giriş, ürün/kategori ekleme, R2 görsel yükleme. `PANEL_REHBERI.md` henüz okunmadı — panel işine başlamadan önce okunacak.
 3. **Teklif formu / WhatsApp akışı** — ürün sayfasında firma adı + yetkili + adet alıp hem `teklif_talep` tablosuna yazan hem WhatsApp'a hazır mesaj gönderen gerçek form (şu an sadece hazır mesajlı WhatsApp linki var).
 4. **Workers Builds / GitHub bağlantısı** — alan adı bölgesi açılınca Cloudflare dashboard'dan `main`'e push → otomatik yayın bağlanacak (seraytekno-API'deki gibi). Şimdilik her değişiklik Cloudflare API ile manuel deploy ediliyor.
 5. Alan adı bağlanınca: custom domain, e-posta yönlendirme, yasal sayfalar (satıcı = Şahlı Otomotiv Ltd. Şti. olduğu için "faturalı satış" yazılabilir).
 
 ## 6. Sürüm geçmişi
+- **v1.4 — 16.11.2026 02:35** — 4 grubun daha ürün/kategori verisi D1'e girildi: Direnc (7 kategori, direnc.net), AracKamera (7 kategori, digimaksi.com + Seray Tekno'nun mevcut araç kamerası kataloğu), Mobass (8 kategori, mobass.com.tr), Audiobus (5 kategori, audiobus.com'un genel-amaçlı bölümü). Toplam 36 ürün, 5/6 grup yayında — sadece Şinasi/MTA (PDF kaynaklı) "Yakında" kaldı.
 - **v1.3 — 16.11.2026 02:20** — Ürün görseli altyapısı: `image_url` doluysa kartta/ürün sayfasında gerçek fotoğraf gösteriliyor, boşsa sade "Görsel hazırlanıyor" kutusu (kategoriye göre uydurma ikon yok — Serdar: izin sorunu yok, Güven kendi fotoğrafını ekleyecek). Haksev taksonomi tablosundaki kaynak adresi `evambalaj.com.tr` olarak düzeltildi.
 - **v1.2 — 16.11.2026 02:15** — `/urunlerimiz?grup=..` ve `/urun/<slug>` eklendi (kategoriye göre gruplanmış ürün listesi + tek ürün sayfası, WhatsApp'tan teklif). Haksev grubuna 9 kategori + temsilci ürün verisi D1'e girildi (ilk gerçek ürün verisi — diğer 5 grup hâlâ "Yakında"). Haksev'in gerçek adresinin `evambalaj.com.tr` olduğu doğrulandı. Deploy sırasında bir UTF-8/base64 kodlama hatası (Türkçe karakterler bozuluyordu) fark edilip düzeltildi.
 - **v1.1 — 16.11.2026 01:35** — Vergi levhası doğrulandı (tüzel kişilik, adres). 6 ürün grubu kesinleşti (Direnç, Şinasi/MTA, Araç Kamera [Seray Tekno+Digimaksi], Mobass, Audiobus, Haksev). Worker `sahliotomotiv-js` + D1 `sahliotomotiv-db` kuruldu, Adım 1 (tanıtım+iletişim sayfası + ürün grupları teaser) canlıya alındı: https://sahliotomotiv-js.serdarcirak.workers.dev/

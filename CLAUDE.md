@@ -14,6 +14,13 @@
 ## 1b. Güven ile yazışma (15.11.2026 gece, ekran görüntüsünden)
 - **Stok tutmuyor:** talep geliyor, ürünü bulup satıyor. Asıl iş araç elektrik-elektronik ama onunla sınırlı değil: sanayi tipi tuvalet kâğıdı, eldiven, iş elbisesi, dezenfekte kireci; yakında arı poleni ve mantardan probiyotik, amino asit; tahin, helva; market / şarküteri ürünleri.
 - Çalıştığı firmalar: **Direnç, Şinasi, Mobass** (bağlantılarını ve "Güncel 2025 Fiyat Listesi 14.02.2025" PDF'ini — 48 sayfa — WhatsApp'tan gönderdi; ekran görüntüsünden okunamadı, Serdar'dan metin olarak istenecek).
+- **Güven'in gönderdiği bağlantılar (web aramasıyla incelendi, siteler doğrudan açılamadı):**
+  - direnc.net — elektronik komponent mağazası (Arduino, sensör, kablo, ölçü aleti, havya); "Toptan Satış" bölümü var; sitede fiyatlı satış.
+  - mobass.com.tr/tr/urunler — Mobass oto ses: amfi, midrange/tweeter hoparlör, subwoofer, ses işlemcisi (DSP), ekolayzır; For-X serisi de Mobass'ın.
+  - audiobus.com/nsite/catalogo — AudioBus (İspanya): otobüs/VIP araç için yolcu ses-görüntü sistemleri, araç kameraları, USB şarj, LED aydınlatma, sinyalizasyon (Busworld Türkiye'de katılımcı) → VIP araç işiyle doğrudan ilgili.
+  - haksevambalaj.com.tr ve digimaksi.com — aramada bilgi çıkmadı (Haksev Ambalaj: muhtemelen sarf / ambalaj ürünleri; Serdar'dan teyit).
+  - "Güncel 2025 Fiyat Listesi 14.02.2025.pdf" (48 sayfa, 4,3 MB) — hangi firmanın olduğu belli değil; Serdar'dan dosya olarak istenecek (sadece kategori/ürün adı için, fiyat kullanılmaz).
+- Kategori taslağı: Oto Ses ve Görüntü (amfi, hoparlör, ekran, kamera) · Araç Elektrik (sigorta, kablo, röle, bağlantı) · VIP / Ticari Araç Donanımı (yolcu ses-görüntü, USB şarj, LED) · Elektronik Komponent ve Ölçü · Sanayi ve İş Güvenliği Sarf (eldiven, iş elbisesi, kâğıt, temizlik) · Doğal Gıda (tahin, helva, arı poleni…) · Güvenlik Kameraları (Seray Tekno ürünleri).
 - Ürünleri bilgisayarında var ama "onlarla sınırlı kalmak istemiyorum".
 - **Sitede hiç fiyat yazılmayacak** (Güven: "Bence hiç fiyat yazmayalım"). **Müşterilerin hepsi tüzel kişi (firma)** → B2B katalog: "Teklif iste / WhatsApp'tan sor"; teklif formunda firma adı, yetkili, telefon.
 - Serdar'ın önerisi: toptancıların bayi panelinde XML ürün listesi varsa ürünler oradan çekilir; yoksa kategori + ürün hazır şablonla çoğaltılır; Güven panelden kategori/ürün ekler. (B2B bayi paneli / XML var mı — cevap bekleniyor.)

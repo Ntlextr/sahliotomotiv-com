@@ -1,8 +1,9 @@
-// Son güncelleme: 16.11.2026 01:30
+// Son güncelleme: 16.11.2026 02:10
 // Şahlı Otomotiv — www.sahliotomotiv.com
 // Tek dosya Worker: site + (ilerideki) ürün API'si. seraytekno-API'deki v2 mimarisinden uyarlandı.
-// Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser.
-// Adım 2'de panel ve tam ürün kataloğu eklenecek.
+// Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser — TAMAM.
+// Adım 2: gerçek ürün/kategori verisi grup grup giriliyor (/urunlerimiz?grup=.. + /urun/<slug>).
+// Henüz panel yok; veri bu dosyadaki INSERT'lerle değil, D1'e doğrudan yazılarak giriliyor.
 
 const RENK = {
   lacivert: '#0A3F94',
@@ -63,6 +64,27 @@ async function grupUrunSayilari(env) {
   return sonuc;
 }
 
+// Bir grubun bütün aktif ürünlerini (kategoriye göre sıralı) döner.
+async function grupUrunleri(env, grup) {
+  try {
+    const { results } = await env.DB
+      .prepare("SELECT id, name, slug, category, tanitim FROM products WHERE grup = ? AND durum = 'aktif' ORDER BY category, name")
+      .bind(grup).all();
+    return results || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// Tek bir ürünü slug'ına göre getirir.
+async function urunGetirSlug(env, slug) {
+  try {
+    return await env.DB.prepare("SELECT * FROM products WHERE slug = ? AND durum = 'aktif'").bind(slug).first();
+  } catch (e) {
+    return null;
+  }
+}
+
 // Sayfanın ortak <head> ve üst/alt kısmı — her sayfa bunu kullanır.
 function kabukAc(baslik, aciklama) {
   return `<!DOCTYPE html>
@@ -116,20 +138,27 @@ function kabukKapat(il) {
 </body></html>`;
 }
 
+// 6 ürün grubu — nötr (müşteriye görünen) adlar. Gerçek tedarikçi adları (Direnç, Şinasi/MTA,
+// Seray Tekno + Digimaksi, Mobass, Audiobus, Haksev) SADECE panelde/`grup` alanında iç referanstır,
+// sitede hiçbir yerde yazılmaz.
+const GRUPLAR = [
+  { b: 'Direnc', ad: 'Elektrik ve Elektronik Komponentler', aciklama: 'Röle, klemens, konnektör, kablo, sigorta, buton ve izole malzemeler' },
+  { b: 'Sinasi', ad: 'Araç Sigorta ve Elektrik Parçaları', aciklama: 'Her tip araç sigortası, röle, kablo seti, sigorta kutusu, müşür ve diyot' },
+  { b: 'AracKamera', ad: 'Araç Kamera ve Kayıt Sistemleri', aciklama: 'Araç kamerası, güvenlik kamerası, kayıt cihazı ve araç monitörü' },
+  { b: 'Mobass', ad: 'Oto Ses Sistemleri', aciklama: 'Amplifikatör, subwoofer, hoparlör, ses işlemcisi ve bağlantı kabloları' },
+  { b: 'Audiobus', ad: 'Ticari Araç Elektroniği', aciklama: 'Kamera/monitör sistemleri, aydınlatma, ses ve güç çözümleri' },
+  { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri', aciklama: 'Bant, streç film, karton, çemberleme ve plastik kasa ürünleri' },
+];
+
 // Ana sayfa: tanıtım + ürün grupları teaser + iletişim.
 function anaSayfaHtml(il, sayilar) {
-  const gruplar = [
-    { b: 'Direnc', ad: 'Elektrik ve Elektronik Komponentler', aciklama: 'Röle, klemens, konnektör, kablo, sigorta, buton ve izole malzemeler' },
-    { b: 'Sinasi', ad: 'Araç Sigorta ve Elektrik Parçaları', aciklama: 'Her tip araç sigortası, röle, kablo seti, sigorta kutusu, müşür ve diyot' },
-    { b: 'AracKamera', ad: 'Araç Kamera ve Kayıt Sistemleri', aciklama: 'Araç kamerası, güvenlik kamerası, kayıt cihazı ve araç monitörü' },
-    { b: 'Mobass', ad: 'Oto Ses Sistemleri', aciklama: 'Amplifikatör, subwoofer, hoparlör, ses işlemcisi ve bağlantı kabloları' },
-    { b: 'Audiobus', ad: 'Ticari Araç Elektroniği', aciklama: 'Kamera/monitör sistemleri, aydınlatma, ses ve güç çözümleri' },
-    { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri', aciklama: 'Bant, streç film, karton, çemberleme ve plastik kasa ürünleri' },
-  ];
-  const kartlar = gruplar.map(g => {
+  const kartlar = GRUPLAR.map(g => {
     const n = sayilar[g.b] || 0;
     const durum = n > 0 ? `${n} ürün` : 'Yakında';
-    return `<div class="grup-kart"><b>${g.ad}</b><span>${g.aciklama}</span><div style="margin-top:8px;font-size:12px;color:var(--yazi-mavi)">${durum}</div></div>`;
+    const ic = `<b>${g.ad}</b><span>${g.aciklama}</span><div style="margin-top:8px;font-size:12px;color:var(--yazi-mavi)">${durum}</div>`;
+    return n > 0
+      ? `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urunlerimiz?grup=${encodeURIComponent(g.b)}">${ic}</a>`
+      : `<div class="grup-kart">${ic}</div>`;
   }).join('');
 
   const harita = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(il.adres)}`;
@@ -155,27 +184,59 @@ function anaSayfaHtml(il, sayilar) {
 </main>` + kabukKapat(il);
 }
 
-// /urunlerimiz — seraytekno.com'daki Teknolojik Ürünler mantığının yalın hâli.
-// Henüz ürün verisi girilmediği için her grup "Yakında" gösterir; panel kurulunca
-// buraya gerçek ürün listesi (kategori süzgeci, ürün sayfası, teklif formu) eklenecek.
+// /urunlerimiz — grup seçilmemişse 6 grubun teaser listesi; bir grup seçilmişse
+// (?grup=Haksev gibi) o grubun kategorilerine göre gruplanmış gerçek ürün listesi.
 function urunlerimizHtml(il, sayilar) {
-  const gruplar = [
-    { b: 'Direnc', ad: 'Elektrik ve Elektronik Komponentler' },
-    { b: 'Sinasi', ad: 'Araç Sigorta ve Elektrik Parçaları' },
-    { b: 'AracKamera', ad: 'Araç Kamera ve Kayıt Sistemleri' },
-    { b: 'Mobass', ad: 'Oto Ses Sistemleri' },
-    { b: 'Audiobus', ad: 'Ticari Araç Elektroniği' },
-    { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri' },
-  ];
-  const satirlar = gruplar.map(g => {
+  const satirlar = GRUPLAR.map(g => {
     const n = sayilar[g.b] || 0;
-    return `<div class="grup-kart"><b>${g.ad}</b><span>${n > 0 ? n + ' ürün listelendi' : 'Ürün listesi hazırlanıyor'}</span></div>`;
+    const ic = `<b>${g.ad}</b><span>${n > 0 ? n + ' ürün listelendi' : 'Ürün listesi hazırlanıyor'}</span>`;
+    return n > 0
+      ? `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urunlerimiz?grup=${encodeURIComponent(g.b)}">${ic}</a>`
+      : `<div class="grup-kart">${ic}</div>`;
   }).join('');
   return kabukAc('Ürünlerimiz — Şahlı Otomotiv', 'Şahlı Otomotiv ürün grupları: araç elektrik-elektronik, sigorta, kamera, ses sistemleri ve ambalaj malzemeleri.') + `
 <main>
   <h2>Ürünlerimiz</h2>
   <p>Kataloğumuz kategori kategori yayına alınıyor. Aradığınız ürünü bulamazsanız WhatsApp'tan sorabilirsiniz.</p>
   <div class="gruplar">${satirlar}</div>
+</main>` + kabukKapat(il);
+}
+
+// Tek bir grubun ürünlerini kategoriye göre gruplanmış kart listesi olarak gösterir.
+function grupSayfasiHtml(il, grupKey, urunler) {
+  const grup = GRUPLAR.find(g => g.b === grupKey);
+  const baslik = grup ? grup.ad : 'Ürünlerimiz';
+  const kategoriler = {};
+  for (const u of urunler) {
+    const k = u.category || 'Diğer';
+    (kategoriler[k] = kategoriler[k] || []).push(u);
+  }
+  const blok = Object.keys(kategoriler).map(k => {
+    const kartlar = kategoriler[k].map(u =>
+      `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urun/${u.slug}"><b>${u.name}</b><span>Teklif için WhatsApp'tan sorun ›</span></a>`
+    ).join('');
+    return `<h2>${k}</h2><div class="gruplar">${kartlar}</div>`;
+  }).join('');
+  return kabukAc(`${baslik} — Şahlı Otomotiv`, `${baslik} kategorisinde Şahlı Otomotiv'in tedarik ettiği ürünler.`) + `
+<main>
+  <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
+  <h1 style="color:var(--lacivert);font-size:22px">${baslik}</h1>
+  ${blok || '<p>Bu grupta henüz yayınlanmış ürün yok.</p>'}
+</main>` + kabukKapat(il);
+}
+
+// Tek ürün sayfası: tanıtım + WhatsApp'tan teklif iste (firma adı/isim/adet formu olmadan,
+// hazır mesajla; teklif_talep tablosuna yazan form sonraki sürümde eklenecek).
+function urunSayfasiHtml(il, urun) {
+  const waMesaj = encodeURIComponent(`Merhaba, "${urun.name}" ürünü için teklif almak istiyorum.`);
+  return kabukAc(`${urun.name} — Şahlı Otomotiv`, urun.tanitim || urun.name) + `
+<main>
+  <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
+  <h1 style="color:var(--lacivert);font-size:22px">${urun.name}</h1>
+  ${urun.category ? `<p style="color:#51607a;font-size:13px">${urun.category}</p>` : ''}
+  <p>${urun.tanitim || ''}</p>
+  <a class="wa-btn" href="https://wa.me/${il.whatsapp}?text=${waMesaj}" target="_blank" rel="noopener">WhatsApp'tan teklif iste</a>
+  <p style="margin-top:18px;font-size:13px;color:#51607a">Fiyat ve stok bilgisi bağlayıcı teklif niteliği taşımaz; ürün sipariş üzerine tedarik edilir.</p>
 </main>` + kabukKapat(il);
 }
 
@@ -201,7 +262,19 @@ export default {
     }
 
     if (yol === '/urunlerimiz') {
+      const grupKey = url.searchParams.get('grup');
+      if (grupKey) {
+        const urunler = await grupUrunleri(env, grupKey);
+        return new Response(grupSayfasiHtml(il, grupKey, urunler), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+      }
       return new Response(urunlerimizHtml(il, sayilar), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+    }
+
+    if (yol.startsWith('/urun/')) {
+      const slug = yol.slice('/urun/'.length);
+      const urun = await urunGetirSlug(env, slug);
+      if (!urun) return new Response('Ürün bulunamadı', { status: 404 });
+      return new Response(urunSayfasiHtml(il, urun), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
     }
 
     return new Response('Sayfa bulunamadı', { status: 404 });

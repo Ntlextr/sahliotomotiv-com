@@ -30,7 +30,7 @@
 - Ürünleri bilgisayarında var ama "onlarla sınırlı kalmak istemiyorum".
 - **Sitede hiç fiyat yazılmayacak** (Güven: "Bence hiç fiyat yazmayalım"). **Müşterilerin hepsi tüzel kişi (firma)** → B2B katalog: "Teklif iste / WhatsApp'tan sor"; teklif formunda firma adı, yetkili, telefon.
 - Serdar'ın önerisi: toptancıların bayi panelinde XML ürün listesi varsa ürünler oradan çekilir; yoksa kategori + ürün hazır şablonla çoğaltılır; Güven panelden kategori/ürün ekler. (B2B bayi paneli / XML var mı — cevap bekleniyor.)
-- Logo: soruldu, cevap bekleniyor.
+- **Logo SEÇİLDİ (16.11.2026): "Nazar jant"** — nazar boncuğu renkleriyle tekerlek jantı amblemi + "ŞAHLI / OTOMOTİV / Elektrik · Elektronik · Tedarik". Dosyalar `marka/` klasöründe (logo açık/koyu zemin PNG+SVG, simge 512/1024, favicon, 1080 profil resmi). Renkler: lacivert #0A3F94, açık mavi #5BB8E8, göz bebeği #0B1B3D, yazı mavi #2A8FD0 (koyu zeminde #8FD3FF), beyaz. Yazı tipi Inter Display Black / Inter Bold. SVG'lerde yazı Inter yazı tipine bağlı; sitede PNG ya da Inter yüklü olarak kullanılır.
 - Not: toptancının fiyat listesi ve katalog görselleri izinsiz yayınlanmaz; fiyat zaten gösterilmeyecek, görseller için bayi izni / XML'deki resim kullanım hakkı sorulmalı.
 
 ## 2. Alan adı ve e-posta

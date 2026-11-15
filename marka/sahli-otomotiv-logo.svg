@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" width="760" height="220">
+  <!-- Nazar boncuğu = jant / tekerlek göbeği -->
+  <g transform="translate(110 110)">
+    <circle r="90" fill="#0A3F94"/>
+    <circle r="66" fill="#FFFFFF"/>
+    <circle r="46" fill="#5BB8E8"/>
+    <circle r="24" fill="#0B1B3D"/>
+    <g stroke="#0A3F94" stroke-width="6" stroke-linecap="round" opacity=".9">
+      <line x1="0" y1="-26" x2="0" y2="-44"/><line x1="25" y1="8" x2="42" y2="14"/><line x1="-25" y1="8" x2="-42" y2="14"/>
+      <line x1="15" y1="21" x2="26" y2="36"/><line x1="-15" y1="21" x2="-26" y2="36"/>
+    </g>
+    <circle cx="-8" cy="-9" r="7" fill="#FFFFFF" opacity=".9"/>
+  </g>
+  <text x="228" y="104" font-family="Inter Display" font-weight="900" font-size="84" fill="#0A3F94">ŞAHLI</text>
+  <text x="232" y="160" font-family="Inter" font-weight="700" font-size="38" letter-spacing="12" fill="#2A8FD0">OTOMOTİV</text>
+  <text x="232" y="194" font-family="Inter" font-weight="500" font-size="16" letter-spacing="4" fill="#5B6B80">ELEKTRİK · ELEKTRONİK · TEDARİK</text>
+</svg>

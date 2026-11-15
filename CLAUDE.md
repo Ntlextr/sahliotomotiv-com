@@ -13,8 +13,14 @@
 
 ## 1b. Güven ile yazışma (15.11.2026 gece, ekran görüntüsünden)
 - **Stok tutmuyor:** talep geliyor, ürünü bulup satıyor. Asıl iş araç elektrik-elektronik ama onunla sınırlı değil: sanayi tipi tuvalet kâğıdı, eldiven, iş elbisesi, dezenfekte kireci; yakında arı poleni ve mantardan probiyotik, amino asit; tahin, helva; market / şarküteri ürünleri.
-- Çalıştığı firmalar: **Direnç, Şinasi, Mobass** (bağlantılarını ve "Güncel 2025 Fiyat Listesi 14.02.2025" PDF'ini — 48 sayfa — WhatsApp'tan gönderdi; ekran görüntüsünden okunamadı, Serdar'dan metin olarak istenecek).
-- **Güven'in gönderdiği bağlantılar (web aramasıyla incelendi, siteler doğrudan açılamadı):**
+- Çalıştığı firmalar: **Direnç, Şinasi, Mobass** (bağlantıları aşağıda; ayrıca "Güncel 2025 Fiyat Listesi 14.02.2025" PDF'ini — 48 sayfa — WhatsApp'tan gönderdi, Serdar dosyayı yeni projeye yükleyecek).
+- **Güven'in gönderdiği bağlantılar (tam adresler):**
+  - https://www.direnc.net/
+  - https://www.mobass.com.tr/tr/urunler
+  - https://audiobus.com/nsite/catalogo/
+  - https://haksevambalaj.com.tr/
+  - https://digimaksi.com/
+- **İnceleme notları (web aramasıyla; siteler doğrudan açılamadı):**
   - direnc.net — elektronik komponent mağazası (Arduino, sensör, kablo, ölçü aleti, havya); "Toptan Satış" bölümü var; sitede fiyatlı satış.
   - mobass.com.tr/tr/urunler — Mobass oto ses: amfi, midrange/tweeter hoparlör, subwoofer, ses işlemcisi (DSP), ekolayzır; For-X serisi de Mobass'ın.
   - audiobus.com/nsite/catalogo — AudioBus (İspanya): otobüs/VIP araç için yolcu ses-görüntü sistemleri, araç kameraları, USB şarj, LED aydınlatma, sinyalizasyon (Busworld Türkiye'de katılımcı) → VIP araç işiyle doğrudan ilgili.

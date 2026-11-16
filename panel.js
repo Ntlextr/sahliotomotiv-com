@@ -1,4 +1,4 @@
-// Son güncelleme: 16.11.2026 10:40
+// Son güncelleme: 16.11.2026 12:55
 // Şahlı Otomotiv — yönetim paneli (/panel)
 // Giriş: SADECE Şahlı Grup Panel'deki "🔑 Panele gir" düğmesiyle (imzalı, 2 dakikalık, tek kullanımlık bilet).
 //   Bilet anahtarı: Worker Secret OTO_SAHLI_ANAHTAR (grup panelinde de aynı değer). Koda/repoya yazılmaz.
@@ -6,7 +6,7 @@
 //   (site, üyelik/bayilik, yetkili, telefon, e-posta, kullanıcı adı, şifre), Kontroller (haftalık kontrol raporları).
 // Tedarikçi şifreleri D1'de AES-GCM ile ŞİFRELİ durur (anahtar: Secret TEDARIK_ANAHTAR); panelde "Göster" ile açılır.
 
-export const PANEL_SURUM = 'p1.0';
+export const PANEL_SURUM = 'p1.1';
 
 const enc = (s) => new TextEncoder().encode(String(s));
 function b64u(bayt) { let s = ''; const a = new Uint8Array(bayt); for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
@@ -311,7 +311,7 @@ async function urunler(){
  if(!OZ){OZ=await api('ozet');}
  const ted=[...new Set([...OZ.firmalar.map(f=>f.kod),...OZ.tedarikci.map(t=>t.kod).filter(Boolean)])];
  const fAd=k=>{const f=OZ.firmalar.find(x=>x.kod===k);return f?f.ad:k;};
- $('#icerik').innerHTML='<h1>Ürünler</h1><div class="suz"><input id="q" placeholder="Ad, kod ara ya da WhatsApp'taki ürün linkini yapıştır" value="'+ka(U.q)+'">'+
+ $('#icerik').innerHTML='<h1>Ürünler</h1><div class="suz"><input id="q" placeholder="Ad, kod ara ya da WhatsApp’taki ürün linkini yapıştır" value="'+ka(U.q)+'">'+
   '<select id="grup"><option value="">Bütün gruplar</option>'+OZ.gruplar.map(g=>'<option value="'+ka(g.grup)+'"'+(U.grup===g.grup?' selected':'')+'>'+ka(GRUPLAR[g.grup]||g.grup)+' ('+g.aktif+')</option>').join('')+'</select>'+
   '<select id="ted"><option value="">Bütün tedarikçiler</option>'+ted.map(k=>{const t=OZ.tedarikci.find(x=>x.kod===k);return '<option value="'+ka(k)+'"'+(U.ted===k?' selected':'')+'>'+ka(fAd(k))+(t?' ('+t.aktif+')':'')+'</option>';}).join('')+'<option value="-"'+(U.ted==='-'?' selected':'')+'>— Tedarikçisi belli değil</option></select>'+
   '<select id="durum"><option value="">Yayında + değil</option><option value="aktif"'+(U.durum==='aktif'?' selected':'')+'>Yayında</option><option value="pasif"'+(U.durum==='pasif'?' selected':'')+'>Yayında değil</option></select>'+

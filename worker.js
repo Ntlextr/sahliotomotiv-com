@@ -1,4 +1,4 @@
-// Son güncelleme: 16.11.2026 02:10
+// Son güncelleme: 16.11.2026 09:55
 // Şahlı Otomotiv — www.sahliotomotiv.com
 // Tek dosya Worker: site + (ilerideki) ürün API'si. seraytekno-API'deki v2 mimarisinden uyarlandı.
 // Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser — TAMAM.
@@ -64,22 +64,69 @@ async function grupUrunSayilari(env) {
   return sonuc;
 }
 
-// Bir grubun bütün aktif ürünlerini (kategoriye göre sıralı) döner.
-async function grupUrunleri(env, grup) {
+// HTML'e yazılan her veritabanı metni bundan geçer (ürün adlarında " < & gibi işaretler olabiliyor).
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Bir gruptaki kategoriler: her biri için aktif ürün sayısı + kartta gösterilecek örnek bir resim.
+async function kategoriSayilari(env, grup) {
   try {
     const { results } = await env.DB
-      .prepare("SELECT id, name, slug, category, tanitim, image_url FROM products WHERE grup = ? AND durum = 'aktif' ORDER BY category, name")
+      .prepare("SELECT category AS ad, COUNT(*) AS n, MAX(image_url) AS img FROM products WHERE grup = ? AND durum = 'aktif' GROUP BY category")
       .bind(grup).all();
-    return results || [];
+    return (results || []).sort((a, b) => String(a.ad).localeCompare(String(b.ad), 'tr'));
   } catch (e) {
     return [];
+  }
+}
+
+// Bir kategorinin alt kategorileri ve ürün sayıları (alt kategorisi olmayan ürünler sayılmaz).
+async function altKategoriSayilari(env, grup, kat) {
+  try {
+    const { results } = await env.DB
+      .prepare("SELECT alt_kategori AS ad, COUNT(*) AS n FROM products WHERE grup = ? AND category = ? AND durum = 'aktif' AND alt_kategori IS NOT NULL AND alt_kategori <> '' GROUP BY alt_kategori")
+      .bind(grup, kat).all();
+    return (results || []).sort((a, b) => String(a.ad).localeCompare(String(b.ad), 'tr'));
+  } catch (e) {
+    return [];
+  }
+}
+
+const SAYFA_BOYU = 48;
+
+// Ürün listesi: grup + (isteğe bağlı) kategori, alt kategori, arama kelimesi, sayfa.
+// Sadece listede gereken sütunlar seçilir (fiyat vb. iç alan asla seçilmez).
+async function urunListesi(env, { grup, kat, alt, q, s }) {
+  const sayfa = s || 1;
+  const kosul = ["grup = ?", "durum = 'aktif'"];
+  const p = [grup];
+  if (kat) { kosul.push('category = ?'); p.push(kat); }
+  if (alt) { kosul.push('alt_kategori = ?'); p.push(alt); }
+  if (q) {
+    for (const kelime of q.split(/\s+/).filter(Boolean).slice(0, 5)) {
+      kosul.push('(name LIKE ? OR marka LIKE ? OR alt_kategori LIKE ?)');
+      const k = '%' + kelime + '%';
+      p.push(k, k, k);
+    }
+  }
+  const where = kosul.join(' AND ');
+  try {
+    const t = await env.DB.prepare(`SELECT COUNT(*) AS n FROM products WHERE ${where}`).bind(...p).first();
+    const { results } = await env.DB
+      .prepare(`SELECT name, slug, category, alt_kategori, marka, image_url FROM products WHERE ${where} ORDER BY alt_kategori, name LIMIT ${SAYFA_BOYU} OFFSET ${(sayfa - 1) * SAYFA_BOYU}`)
+      .bind(...p).all();
+    return { toplam: t ? t.n : 0, urunler: results || [] };
+  } catch (e) {
+    return { toplam: 0, urunler: [] };
   }
 }
 
 // Tek bir ürünü slug'ına göre getirir.
 async function urunGetirSlug(env, slug) {
   try {
-    return await env.DB.prepare("SELECT * FROM products WHERE slug = ? AND durum = 'aktif'").bind(slug).first();
+    // Açık sütun listesi: products'a ileride iç alan (fiyat vb.) eklense bile ürün sayfasına sızmaz.
+    return await env.DB.prepare("SELECT name, slug, grup, category, alt_kategori, marka, tanitim, ozellikler, teknik, image_url FROM products WHERE slug = ? AND durum = 'aktif'").bind(slug).first();
   } catch (e) {
     return null;
   }
@@ -121,7 +168,26 @@ function kabukAc(baslik, aciklama) {
   .grup-kart{border:1px solid #e3e8f0;border-radius:10px;padding:16px;background:#f8fafc}
   .grup-kart b{color:var(--lacivert);display:block;margin-bottom:6px;font-size:15px}
   .grup-kart span{font-size:13px;color:#51607a}
-  .urun-gorsel{width:100%;aspect-ratio:4/3;border-radius:8px;object-fit:cover;background:#eef2f8;margin-bottom:8px;display:block}
+  .urun-gorsel{width:100%;aspect-ratio:4/3;border-radius:8px;object-fit:contain;background:#fff;margin-bottom:8px;display:block}
+  .yol{font-size:13px;color:#51607a;margin:0 0 6px}
+  .yol a{color:var(--yazi-mavi);text-decoration:none}
+  .kat-kart{border:1px solid #e3e8f0;border-radius:10px;padding:12px;background:#f8fafc;text-decoration:none;color:inherit;display:block}
+  .kat-kart b{color:var(--lacivert);display:block;font-size:15px}
+  .kat-kart .say{font-size:13px;color:var(--yazi-mavi);font-weight:600}
+  .ciplar{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .cip{border:1px solid #cfd9e8;border-radius:20px;padding:6px 12px;font-size:13px;text-decoration:none;color:var(--lacivert);background:#fff;white-space:nowrap}
+  .cip.secili{background:var(--lacivert);color:#fff;border-color:var(--lacivert)}
+  .cip small{opacity:.75}
+  .ara{display:flex;gap:8px;margin:12px 0}
+  .ara input{flex:1;min-width:0;padding:10px 12px;border:1px solid #cfd9e8;border-radius:8px;font-size:15px}
+  .ara button{padding:10px 16px;border:0;border-radius:8px;background:var(--lacivert);color:#fff;font-size:15px}
+  .urunler{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:14px 0}
+  .urunler .grup-kart{padding:10px}
+  .urunler .grup-kart b{font-size:13.5px;font-weight:600}
+  .urunler .grup-kart span{font-size:12px}
+  .sayfalar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:20px 0}
+  .sayfalar a,.sayfalar span{padding:7px 12px;border:1px solid #cfd9e8;border-radius:6px;text-decoration:none;color:var(--lacivert);font-size:14px}
+  .sayfalar span{background:var(--lacivert);color:#fff;border-color:var(--lacivert)}
   .urun-yer{width:100%;aspect-ratio:4/3;border-radius:8px;background:#eef2f8;margin-bottom:8px;display:flex;align-items:center;justify-content:center;color:#8a97ad;font-size:12px;text-align:center;padding:6px}
   .urun-detay-gorsel{width:100%;max-width:360px;border-radius:10px;object-fit:cover;margin:10px 0}
   .iletisim-kutu{background:#f0f6ff;border-radius:12px;padding:20px;margin-top:10px}
@@ -163,7 +229,7 @@ const GRUPLAR = [
 // Ürün kartı/sayfasında görsel: image_url doluysa gerçek fotoğraf gösterilir;
 // boşsa (Güven henüz kendi fotoğrafını eklemediyse) sade "Görsel hazırlanıyor" kutusu.
 function urunGorselHtml(u, sinif) {
-  if (u.image_url) return `<img class="${sinif}" src="${u.image_url}" alt="${u.name}" loading="lazy">`;
+  if (u.image_url) return `<img class="${sinif}" src="${esc(u.image_url)}" alt="${esc(u.name)}" loading="lazy">`;
   return `<div class="${sinif === 'urun-detay-gorsel' ? 'urun-yer' : sinif}" style="${sinif === 'urun-detay-gorsel' ? 'max-width:360px' : ''}">Görsel hazırlanıyor</div>`;
 }
 
@@ -219,26 +285,81 @@ function urunlerimizHtml(il, sayilar) {
 </main>` + kabukKapat(il);
 }
 
-// Tek bir grubun ürünlerini kategoriye göre gruplanmış kart listesi olarak gösterir.
-function grupSayfasiHtml(il, grupKey, urunler) {
+// /urunlerimiz adresi üretir (boş parametreler yazılmaz).
+function listeAdres(o) {
+  const p = new URLSearchParams();
+  for (const k of ['grup', 'kat', 'alt', 'q']) if (o[k]) p.set(k, o[k]);
+  if (o.s && o.s > 1) p.set('s', o.s);
+  return '/urunlerimiz?' + p.toString();
+}
+
+// Ürün kartı (liste sayfalarında).
+function urunKartHtml(u) {
+  return `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urun/${encodeURIComponent(u.slug)}">${urunGorselHtml(u, 'urun-gorsel')}<b>${esc(u.name)}</b><span>${u.alt_kategori ? esc(u.alt_kategori) + ' · ' : ''}Teklif iste ›</span></a>`;
+}
+
+// Arama kutusu (bir grubun içinde arar).
+function aramaHtml(grupKey, q) {
+  return `<form class="ara" method="get" action="/urunlerimiz"><input type="hidden" name="grup" value="${esc(grupKey)}"><input type="search" name="q" value="${esc(q || '')}" placeholder="Bu grupta ürün ara (ör. 12V röle, 4 pin)"><button type="submit">Ara</button></form>`;
+}
+
+// Sayfa numaraları (48'er ürün).
+function sayfalarHtml(o, toplam) {
+  const son = Math.ceil(toplam / SAYFA_BOYU);
+  if (son <= 1) return '';
+  const s = o.s || 1;
+  const parca = [];
+  for (let i = 1; i <= son; i++) {
+    if (i === 1 || i === son || Math.abs(i - s) <= 2) parca.push(i === s ? `<span>${i}</span>` : `<a href="${listeAdres({ ...o, s: i })}">${i}</a>`);
+    else if (parca[parca.length - 1] !== '…') parca.push('…');
+  }
+  return `<div class="sayfalar">${parca.map(x => x === '…' ? '<b style="padding:7px 4px">…</b>' : x).join('')}</div>`;
+}
+
+// Bir grubun ana sayfası: kategori kartları (her birinde ürün sayısı), tıklanınca o kategori açılır.
+function grupSayfasiHtml(il, grupKey, kategoriler) {
   const grup = GRUPLAR.find(g => g.b === grupKey);
   const baslik = grup ? grup.ad : 'Ürünlerimiz';
-  const kategoriler = {};
-  for (const u of urunler) {
-    const k = u.category || 'Diğer';
-    (kategoriler[k] = kategoriler[k] || []).push(u);
-  }
-  const blok = Object.keys(kategoriler).map(k => {
-    const kartlar = kategoriler[k].map(u =>
-      `<a class="grup-kart" style="text-decoration:none;color:inherit;display:block" href="/urun/${u.slug}">${urunGorselHtml(u, 'urun-gorsel')}<b>${u.name}</b><span>Teklif için WhatsApp'tan sorun ›</span></a>`
-    ).join('');
-    return `<h2>${k}</h2><div class="gruplar">${kartlar}</div>`;
-  }).join('');
-  return kabukAc(`${baslik} — Şahlı Otomotiv`, `${baslik} kategorisinde Şahlı Otomotiv'in tedarik ettiği ürünler.`) + `
+  const toplam = kategoriler.reduce((t, k) => t + k.n, 0);
+  const kartlar = kategoriler.map(k =>
+    `<a class="kat-kart" href="${listeAdres({ grup: grupKey, kat: k.ad })}">${k.img ? `<img class="urun-gorsel" src="${esc(k.img)}" alt="${esc(k.ad)}" loading="lazy">` : ''}<b>${esc(k.ad || 'Diğer')}</b><span class="say">${k.n} ürün ›</span></a>`
+  ).join('');
+  return kabukAc(`${baslik} — Şahlı Otomotiv`, `${baslik}: ${toplam} ürün, ${kategoriler.length} kategori. Şahlı Otomotiv tedarik kataloğu.`) + `
 <main>
-  <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
-  <h1 style="color:var(--lacivert);font-size:22px">${baslik}</h1>
-  ${blok || '<p>Bu grupta henüz yayınlanmış ürün yok.</p>'}
+  <p class="yol"><a href="/urunlerimiz">Ürünlerimiz</a> › ${esc(baslik)}</p>
+  <h1 style="color:var(--lacivert);font-size:22px;margin:4px 0">${esc(baslik)}</h1>
+  <p style="color:#51607a;margin:0">${toplam} ürün · ${kategoriler.length} kategori</p>
+  ${aramaHtml(grupKey, '')}
+  ${kartlar ? `<div class="gruplar">${kartlar}</div>` : '<p>Bu grupta henüz yayınlanmış ürün yok.</p>'}
+</main>` + kabukKapat(il);
+}
+
+// Kategori / alt kategori / arama sonucu sayfası: üstte alt kategori düğmeleri (sayılı), altta ürünler.
+function listeSayfasiHtml(il, o, altlar, toplam, urunler) {
+  const grup = GRUPLAR.find(g => g.b === o.grup);
+  const grupAd = grup ? grup.ad : 'Ürünlerimiz';
+  const katToplam = altlar.reduce((t, a) => t + a.n, 0);
+  let ciplar = '';
+  if (o.kat && altlar.length > 1) {
+    ciplar = `<div class="ciplar"><a class="cip${!o.alt ? ' secili' : ''}" href="${listeAdres({ grup: o.grup, kat: o.kat })}">Tümü <small>${katToplam}</small></a>` +
+      altlar.map(a => `<a class="cip${a.ad === o.alt ? ' secili' : ''}" href="${listeAdres({ grup: o.grup, kat: o.kat, alt: a.ad })}">${esc(a.ad)} <small>${a.n}</small></a>`).join('') + '</div>';
+  }
+  const baslik = o.q ? `"${o.q}" araması` : (o.alt || o.kat || grupAd);
+  const yol = [`<a href="/urunlerimiz">Ürünlerimiz</a>`, `<a href="${listeAdres({ grup: o.grup })}">${esc(grupAd)}</a>`];
+  if (o.kat) yol.push(o.alt ? `<a href="${listeAdres({ grup: o.grup, kat: o.kat })}">${esc(o.kat)}</a>` : esc(o.kat));
+  if (o.alt) yol.push(esc(o.alt));
+  const ilk = (((o.s || 1) - 1) * SAYFA_BOYU) + 1;
+  const bilgi = toplam ? `${toplam} ürün${toplam > SAYFA_BOYU ? ` · ${ilk}–${Math.min(ilk + SAYFA_BOYU - 1, toplam)} arası gösteriliyor` : ''}` : 'Ürün bulunamadı.';
+  return kabukAc(`${baslik} — ${grupAd} — Şahlı Otomotiv`, `${baslik}: ${toplam} ürün. Şahlı Otomotiv tedarik kataloğu, teklif için WhatsApp.`) + `
+<main>
+  <p class="yol">${yol.join(' › ')}</p>
+  <h1 style="color:var(--lacivert);font-size:22px;margin:4px 0">${esc(baslik)}</h1>
+  ${aramaHtml(o.grup, o.q)}
+  ${ciplar}
+  <p style="color:#51607a;margin:6px 0">${bilgi}</p>
+  <div class="urunler">${urunler.map(urunKartHtml).join('')}</div>
+  ${sayfalarHtml(o, toplam)}
+  <p style="font-size:13px;color:#51607a">Aradığınızı bulamadınız mı? <a href="https://wa.me/${il.whatsapp}?text=${encodeURIComponent('Merhaba, aradığım ürün: ')}" target="_blank" rel="noopener" style="color:var(--yazi-mavi)">WhatsApp'tan yazın</a>, sizin için bulalım.</p>
 </main>` + kabukKapat(il);
 }
 
@@ -252,7 +373,7 @@ function urunSayfasiHtml(il, urun) {
   if (urun.teknik) {
     try {
       const t = JSON.parse(urun.teknik);
-      const satirlar = Object.keys(t).map(k => `<tr><td style="padding:6px 10px;color:#51607a;border-bottom:1px solid #e3e8f0">${k}</td><td style="padding:6px 10px;font-weight:600;border-bottom:1px solid #e3e8f0">${t[k]}</td></tr>`).join('');
+      const satirlar = Object.keys(t).map(k => `<tr><td style="padding:6px 10px;color:#51607a;border-bottom:1px solid #e3e8f0">${esc(k)}</td><td style="padding:6px 10px;font-weight:600;border-bottom:1px solid #e3e8f0">${esc(t[k])}</td></tr>`).join('');
       if (satirlar) teknikHtml = `<h3 style="font-size:15px;color:var(--lacivert);margin-top:18px">Teknik Özellikler</h3><table style="width:100%;border-collapse:collapse;font-size:14px">${satirlar}</table>`;
     } catch (e) { /* bozuk JSON ise sessizce atla */ }
   }
@@ -262,18 +383,23 @@ function urunSayfasiHtml(il, urun) {
   if (urun.ozellikler) {
     try {
       const liste = JSON.parse(urun.ozellikler);
-      const satirlar = (liste || []).map(o => `<li style="margin-bottom:6px"><b>${o.baslik || ''}</b>${o.metin ? ': ' + o.metin : ''}</li>`).join('');
+      const satirlar = (liste || []).map(o => `<li style="margin-bottom:6px"><b>${esc(o.baslik || '')}</b>${o.metin ? ': ' + esc(o.metin) : ''}</li>`).join('');
       if (satirlar) ozellikHtml = `<h3 style="font-size:15px;color:var(--lacivert);margin-top:18px">Öne Çıkan Özellikler</h3><ul style="padding-left:20px;font-size:14px">${satirlar}</ul>`;
     } catch (e) { /* bozuk JSON ise sessizce atla */ }
   }
 
-  return kabukAc(`${urun.name} — Şahlı Otomotiv`, urun.tanitim || urun.name) + `
+  const grup = GRUPLAR.find(g => g.b === urun.grup);
+  const yol = [`<a href="/urunlerimiz">Ürünlerimiz</a>`];
+  if (grup) yol.push(`<a href="${listeAdres({ grup: grup.b })}">${esc(grup.ad)}</a>`);
+  if (grup && urun.category) yol.push(`<a href="${listeAdres({ grup: grup.b, kat: urun.category })}">${esc(urun.category)}</a>`);
+  if (grup && urun.category && urun.alt_kategori) yol.push(`<a href="${listeAdres({ grup: grup.b, kat: urun.category, alt: urun.alt_kategori })}">${esc(urun.alt_kategori)}</a>`);
+
+  return kabukAc(`${esc(urun.name)} — Şahlı Otomotiv`, esc(urun.tanitim || urun.name)) + `
 <main>
-  <p><a href="/urunlerimiz" style="color:var(--yazi-mavi)">‹ Tüm ürün grupları</a></p>
-  <h1 style="color:var(--lacivert);font-size:22px">${urun.name}</h1>
-  ${urun.category ? `<p style="color:#51607a;font-size:13px">${urun.category}</p>` : ''}
+  <p class="yol">${yol.join(' › ')}</p>
+  <h1 style="color:var(--lacivert);font-size:22px">${esc(urun.name)}</h1>
   ${urunGorselHtml(urun, 'urun-detay-gorsel')}
-  <p>${urun.tanitim || ''}</p>
+  <p>${esc(urun.tanitim || '')}</p>
   ${ozellikHtml}
   ${teknikHtml}
   <a class="wa-btn" href="https://wa.me/${il.whatsapp}?text=${waMesaj}" target="_blank" rel="noopener">WhatsApp'tan teklif iste</a>
@@ -303,10 +429,26 @@ export default {
     }
 
     if (yol === '/urunlerimiz') {
-      const grupKey = url.searchParams.get('grup');
-      if (grupKey) {
-        const urunler = await grupUrunleri(env, grupKey);
-        return new Response(grupSayfasiHtml(il, grupKey, urunler), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+      const sp = url.searchParams;
+      const o = {
+        grup: sp.get('grup') || '',
+        kat: sp.get('kat') || '',
+        alt: sp.get('alt') || '',
+        q: (sp.get('q') || '').trim().slice(0, 60),
+        s: Math.max(1, Math.min(500, parseInt(sp.get('s') || '1', 10) || 1)),
+      };
+      const html = { headers: { 'Content-Type': 'text/html; charset=utf-8' } };
+      if (o.grup && !o.kat && !o.q) {
+        // Grup ana sayfası: kategori kartları + sayılar
+        return new Response(grupSayfasiHtml(il, o.grup, await kategoriSayilari(env, o.grup)), html);
+      }
+      if (o.grup) {
+        // Kategori / alt kategori / arama: ürün listesi (sayfa sayfa)
+        const [altlar, liste] = await Promise.all([
+          o.kat ? altKategoriSayilari(env, o.grup, o.kat) : Promise.resolve([]),
+          urunListesi(env, o),
+        ]);
+        return new Response(listeSayfasiHtml(il, o, altlar, liste.toplam, liste.urunler), html);
       }
       return new Response(urunlerimizHtml(il, sayilar), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
     }

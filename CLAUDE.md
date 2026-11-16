@@ -1,6 +1,6 @@
 # ŞAHLI OTOMOTİV — Proje Referans Dosyası
 
-**Güncel sürüm: v1.7 — 16.11.2026 03:35** (sürüm geçmişi Bölüm 6'da)
+**Güncel sürüm: v1.8 — 16.11.2026 08:20** (sürüm geçmişi Bölüm 6'da)
 
 > Serdar Türkçe konuşur, programcı değildir, telefondan çalışır. Kısa, sade anlat; işe başlamadan ne yapacağını söyle, onay al.
 > **Sohbet başında OKU:** `Ntlextr/seraytekno-API` reposundaki **`ORTAK_NOTLAR.md`** (projeler arası ortak bilgiler) ve **`PANEL_REHBERI.md`** (Seray Tekno panellerinin ortak kuralları).
@@ -38,10 +38,16 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 - **Alan adı:** sahliotomotiv.com Cloudflare'e transfer sürecinde, henüz bölge (zone) yok. Bölge açılınca: custom domain bağlanır (www + apex), Email Routing `bilgi@sahliotomotiv.com` → `guven.sahli@gmail.com`, ve bu repo için Workers Builds tetiği kurulup `main`'e her commit'te otomatik yayın başlar (şu an manuel deploy ediliyor).
 - **D1 Şeması (site_icerik anahtarları):** `magaza_gruplar` (JSON, grup→nötr ad eşlemesi), `iletisim` (unvan, telefon, whatsapp, adres, çalışma saatleri).
 
-## 4. Site — mevcut durum (v1.7)
+## 4. Site — mevcut durum (v1.8)
 - **Ana sayfa (`/`):** hero tanıtım yazısı, 6 ürün grubu kartı (nötr başlıklarla; ürünü olan grup tıklanınca `/urunlerimiz?grup=..`'a gider, boş olan "Yakında" yazar), iletişim kutusu (unvan, adres + Google Haritalar linki, telefon, çalışma saatleri, WhatsApp düğmesi), sağ altta yüzen WhatsApp balonu.
 - **`/urunlerimiz`:** grup seçilmemişse 6 grubun teaser listesi; `?grup=Haksev` gibi bir grup seçilince o grubun kategorilerine göre gruplanmış gerçek ürün kartları.
 - **`/urun/<slug>`:** tek ürün sayfası — tanıtım metni + görsel (image_url doluysa gerçek fotoğraf, boşsa "Görsel hazırlanıyor") + varsa "Öne Çıkan Özellikler" listesi (`ozellikler` JSON) + varsa "Teknik Özellikler" tablosu (`teknik` JSON) + "WhatsApp'tan teklif iste" düğmesi (ürün adını içeren hazır mesajla). Hiçbir yerde fiyat yok. `teklif_talep` tablosuna yazan form henüz yok, doğrudan WhatsApp'a yönlendiriyor.
+- **v1.8 (16.11.2026) — Mobass/Audiobus/AracKamera gerçek kataloglardan ciddi şekilde büyütüldü:** Serdar "o linklerde bu kadar mı ürün var" diye sorunca, gerçekte mobass.com.tr'de ~95, audiobus.com'da ~50 (genel-amaçlı alt kümede), digimaksi.com'da 24 ürün olduğu görüldü — v1.7'deki sayılar sadece temsiliydi. Üçü de gerçek kataloglardan ek ürünlerle büyütüldü:
+  - **Mobass** 16→**31 ürün**: Amplifikatör (+5: MBA-105.4AB, MBA-15000.1D, MB-130.4D, MBZ-1200.1D, MBP-1200.1D), Subwoofer (+3: MBW-15SPL, MBW-2010S4, MBW-208S4), Koaksiyel (+2: MBC-10, MBC-13), Midrange/Tweeter (+3: MB-6, MBM-1569, MBT-02v2), Kablo (+1: MB-1M RCA), Kabin (+1: MB-108) — hepsi gerçek model adı + mobass.com.tr görseli + gerçek özellik.
+  - **Audiobus** 10→**28 ürün**: Kamera/Monitör (+3: IP001ZV-1MP, M18125TFTFDP5, M19124TFTAPM), Aydınlatma (+4: gündüz farı seti, 2 çevre uyarı lambası, LUZDIA01 kiti), Ses (+4: KML-BTU, NAV-29, ZZ671 siren, anten AN1144-7 → İletişim kategorisine), Güç/Enerji (+6: DN12/DP06 dağıtıcı, 2 akü kesici, EMI filtre, gerilim düşürücü, USB şarj soketi) — hepsi gerçek model + audiobus.com görseli + gerçek özellik.
+  - **AracKamera** 9→**20 ürün**: DigiMaksi'nin GERÇEK ürün bazlı görselleri bulunduğu fark edildi (önceden yok sanılıyordu) — mevcut 8 ürüne gerçek fotoğraf eklendi; 11 yeni DigiMaksi kamera/NVR/aksesuar ürünü eklendi (DG-127, DG-118, DG-126, DG-617, DG-116, DG-301, DG-C100, DG-115 kameralar; DG-604/DG-708 hibrit kayıt cihazları; DG-H601 hoparlör) — hepsi gerçek görsel + özellik.
+  - Hâlâ fiyat yok. Canlıda doğrulandı (`curl` ile 31/28/20 ürün sayısı).
+  - **Haksev değişmedi** — evambalaj.com.tr'ye hâlâ erişilemiyor.
 - **v1.7 (16.11.2026) — Mobass, Audiobus, AracKamera gerçek veriyle tamamlandı:** Serdar "bana sorma bitir" dedi → kalan 3 grup da Direnç'teki yöntemle gerçekleştirildi.
   - **Mobass** (Oto Ses Sistemleri) 8→**16 ürün**: mevcut 8 ürün gerçek Mobass model adı + gerçek mobass.com.tr görseli (hotlink `files2/images/s_*.jpg`) + gerçek teknik özellikle güncellendi (MB-800.1, MB-68DRC, MBW-2512 D2&D4, MB-8, MBC-16, MB-4KIT, MB-2512 kabin, MBQ-6), ayrıca her kategoriye 1 ürün daha eklendi (MBA-460 4 kanal amfi, MB-68DSP.A dijital ses işlemcisi, MBW-2512 D2&D4 subwoofer, MBT-01v2 tweeter, MBC-69 koaksiyel, MB-8KIT kablo seti, MB-2515 kabin, MB-3000.5 5 kanal amfi).
   - **Audiobus** (Ticari Araç Elektroniği) 5→**10 ürün**: mevcut 5 ürün gerçek Audiobus model adı + gerçek audiobus.com görseli (hotlink `wp-content/uploads/.../*_shop-1-200x200.png`) + gerçek teknik özellikle güncellendi (RYM300 invertör, FTL22120C LED lamba, M21524TFTGR2 monitör, S2454-14 radyo, wifi router), ayrıca 5 yeni ürün eklendi (FTL32180C LED lamba, Hikvision DS2CD2523G0-I IP kamera, M04312TFT 4,3" monitör, 7620220012 coach amfi, R1131 gerilim stabilizatörü).
@@ -71,6 +77,7 @@ Her kaynağın gerçek adı sitede ASLA yazılmaz — panelde `products.grup` al
 5. Alan adı bağlanınca: custom domain, e-posta yönlendirme, yasal sayfalar (satıcı = Şahlı Otomotiv Ltd. Şti. olduğu için "faturalı satış" yazılabilir).
 
 ## 6. Sürüm geçmişi
+- **v1.8 — 16.11.2026 08:20** — Serdar'ın gerçek kataloglardaki ürün sayısını sorması üzerine Mobass (16→31), Audiobus (10→28) ve AracKamera (9→20) gerçek tedarikçi kataloglarından (mobass.com.tr ~95, audiobus.com ~50, digimaksi.com 24 ürün) daha fazla gerçek ürünle büyütüldü; DigiMaksi'nin gerçek ürün görselleri olduğu fark edilip mevcut AracKamera ürünlerine de eklendi. Fiyat yok, Haksev değişmedi. Canlıda doğrulandı.
 - **v1.7 — 16.11.2026 03:35** — Mobass (8→16), Audiobus (5→10), AracKamera (7→9) grupları gerçek tedarikçi verisiyle (mobass.com.tr, audiobus.com, digimaksi.com) dolduruldu — gerçek ad, gerçek görsel (Mobass/Audiobus hotlink; AracKamera görselsiz) ve gerçek teknik özellik, fiyat yok. Haksev kaynağına ulaşılamadığı için değişmedi. Canlıda doğrulandı.
 - **v1.6 — 16.11.2026 03:10** — Direnç grubu 15 ürüne tamamlandı (her kategoriye gerçek direnc.net ürünlerinden ek ürün): Röle, Klemens, Konnektör, Buton ve Anahtar, Sigorta ve Yuvaları kategorilerine gerçek ad + direnc.net görseli + gerçek teknik özellikle 1-2 ürün daha eklendi (fiyat yok). Kablo Çeşitleri ve İzolasyon tek üründe kaldı.
 - **v1.5 — 16.11.2026 02:55** — Mobilde üst üste binen menü düzeltildi (`header`/`nav` flex-wrap + küçük ekran medya sorgusu). Direnç grubunun 7 ürünü gerçek direnc.net ürünleriyle değiştirildi: gerçek ad, direnc.net'in kendi görselinden doğrudan bağlantı (hotlink, fiyat yok), gerçek teknik özellikler. `grupUrunleri` SQL'i `image_url` seçecek şekilde düzeltildi; `urunSayfasiHtml` artık `ozellikler`/`teknik` JSON alanlarını gerçek bir listeye/tabloya basıyor. Diğer 4 grup (AracKamera, Mobass, Audiobus, Haksev) henüz aynı işlemden geçmedi.

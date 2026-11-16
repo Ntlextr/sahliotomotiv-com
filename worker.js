@@ -1,4 +1,4 @@
-// Son güncelleme: 16.11.2026 09:55
+// Son güncelleme: 16.11.2026 10:05
 // Şahlı Otomotiv — www.sahliotomotiv.com
 // Tek dosya Worker: site + (ilerideki) ürün API'si. seraytekno-API'deki v2 mimarisinden uyarlandı.
 // Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser — TAMAM.
@@ -220,7 +220,7 @@ function kabukKapat(il) {
 const GRUPLAR = [
   { b: 'Direnc', ad: 'Elektrik ve Elektronik Komponentler', aciklama: 'Röle, klemens, konnektör, kablo, sigorta, buton ve izole malzemeler' },
   { b: 'Sinasi', ad: 'Araç Sigorta ve Elektrik Parçaları', aciklama: 'Her tip araç sigortası, röle, kablo seti, sigorta kutusu, müşür ve diyot' },
-  { b: 'AracKamera', ad: 'Araç Kamera ve Kayıt Sistemleri', aciklama: 'Araç kamerası, güvenlik kamerası, kayıt cihazı ve araç monitörü' },
+  { b: 'AracKamera', ad: 'Kamera, Kayıt ve Güvenlik Sistemleri', aciklama: 'Araç kamerası ve monitörü, güvenlik kamerası, kayıt cihazı, alarm, geçiş kontrol ve network ürünleri' },
   { b: 'Mobass', ad: 'Oto Ses Sistemleri', aciklama: 'Amplifikatör, subwoofer, hoparlör, ses işlemcisi ve bağlantı kabloları' },
   { b: 'Audiobus', ad: 'Ticari Araç Elektroniği', aciklama: 'Kamera/monitör sistemleri, aydınlatma, ses ve güç çözümleri' },
   { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri', aciklama: 'Bant, streç film, karton, çemberleme ve plastik kasa ürünleri' },

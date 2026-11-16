@@ -1,9 +1,11 @@
-// Son güncelleme: 16.11.2026 10:05
+// Son güncelleme: 16.11.2026 10:45
 // Şahlı Otomotiv — www.sahliotomotiv.com
 // Tek dosya Worker: site + (ilerideki) ürün API'si. seraytekno-API'deki v2 mimarisinden uyarlandı.
 // Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser — TAMAM.
 // Adım 2: gerçek ürün/kategori verisi grup grup giriliyor (/urunlerimiz?grup=.. + /urun/<slug>).
 // Henüz panel yok; veri bu dosyadaki INSERT'lerle değil, D1'e doğrudan yazılarak giriliyor.
+
+import { panelIsle, panelKimlik } from './panel.js';
 
 const RENK = {
   lacivert: '#0A3F94',
@@ -365,8 +367,9 @@ function listeSayfasiHtml(il, o, altlar, toplam, urunler) {
 
 // Tek ürün sayfası: tanıtım + WhatsApp'tan teklif iste (firma adı/isim/adet formu olmadan,
 // hazır mesajla; teklif_talep tablosuna yazan form sonraki sürümde eklenecek).
-function urunSayfasiHtml(il, urun) {
-  const waMesaj = encodeURIComponent(`Merhaba, "${urun.name}" ürünü için teklif almak istiyorum.`);
+function urunSayfasiHtml(il, urun, kok) {
+  // Mesajda ürünün linki de gider: Güven Bey linke basınca ürünü (ve panel şeridini) görür.
+  const waMesaj = encodeURIComponent(`Merhaba, "${urun.name}" ürünü için teklif almak istiyorum.\n${(kok || 'https://www.sahliotomotiv.com')}/urun/${urun.slug}`);
 
   // Teknik özellikler: products.teknik sütunu JSON {"Başlık": "Değer", ...} olarak tutulur.
   let teknikHtml = '';
@@ -412,8 +415,11 @@ export default {
     const url = new URL(request.url);
     const yol = url.pathname;
 
+    // Yönetim paneli (giriş sadece Şahlı Grup Panel'den)
+    if (yol === '/panel' || yol.startsWith('/panel/')) return panelIsle(request, env, url);
+
     if (yol === '/robots.txt') {
-      return new Response('User-agent: *\nAllow: /\nSitemap: https://www.sahliotomotiv.com/sitemap.xml\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      return new Response('User-agent: *\nAllow: /\nDisallow: /panel\nSitemap: https://www.sahliotomotiv.com/sitemap.xml\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
 
     if (yol === '/sitemap.xml') {
@@ -457,7 +463,20 @@ export default {
       const slug = yol.slice('/urun/'.length);
       const urun = await urunGetirSlug(env, slug);
       if (!urun) return new Response('Ürün bulunamadı', { status: 404 });
-      return new Response(urunSayfasiHtml(il, urun), { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+      // Panel oturumu açık olan (Güven Bey / Serdar) ürün sayfasında üstte yönetici şeridi görür.
+      const yon = await panelKimlik(env, request);
+      let serit = '';
+      if (yon) {
+        const ic = await env.DB.prepare(`SELECT p.id, p.kaynak_url, p.stok_kodu, f.ad AS firma, f.site,
+            (SELECT fiyat || ' ' || IFNULL(para_birimi,'') || ' (' || IFNULL(liste_tarihi,'') || ')' FROM alis_fiyatlari a WHERE a.product_id=p.id ORDER BY liste_tarihi DESC LIMIT 1) AS alis
+          FROM products p LEFT JOIN tedarik_firmalari f ON f.kod=p.tedarikci WHERE p.slug=?`).bind(slug).first().catch(() => null);
+        if (ic) serit = `<div style="background:#fff4dc;border-bottom:2px solid #f0c060;padding:10px 16px;font-size:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+  <b>🔧 Yönetici</b><span>Tedarikçi: <b>${esc(ic.firma || '—')}</b>${ic.stok_kodu ? ' · ' + esc(ic.stok_kodu) : ''}${ic.alis ? ' · Alış: <b>' + esc(ic.alis) + '</b>' : ''}</span>
+  <a href="/panel#urunler?q=${encodeURIComponent('/urun/' + slug)}" style="background:#0A3F94;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none">Panelde aç</a>
+  ${ic.kaynak_url ? `<a href="${esc(ic.kaynak_url)}" target="_blank" rel="noopener noreferrer" style="background:#7a5200;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none">Tedarikçide aç / fiyat ↗</a>` : (ic.site ? `<a href="${esc(ic.site)}" target="_blank" rel="noopener noreferrer" style="background:#7a5200;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none">Tedarikçi sitesi ↗</a>` : '')}</div>`;
+      }
+      const h = urunSayfasiHtml(il, urun, url.origin);
+      return new Response(serit ? h.replace('</header>', '</header>' + serit) : h, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': serit ? 'private, no-store' : 'no-cache' } });
     }
 
     return new Response('Sayfa bulunamadı', { status: 404 });

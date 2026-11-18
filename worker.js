@@ -1,4 +1,4 @@
-// Son güncelleme: 16.11.2026 10:45
+// Son güncelleme: 18.11.2026 23:20
 // Şahlı Otomotiv — www.sahliotomotiv.com
 // Tek dosya Worker: site + (ilerideki) ürün API'si. seraytekno-API'deki v2 mimarisinden uyarlandı.
 // Adım 1 (CLAUDE.md Bölüm 4): tanıtım + iletişim sayfası + ürün grupları teaser — TAMAM.
@@ -75,7 +75,7 @@ function esc(s) {
 async function kategoriSayilari(env, grup) {
   try {
     const { results } = await env.DB
-      .prepare("SELECT category AS ad, COUNT(*) AS n, MAX(image_url) AS img FROM products WHERE grup = ? AND durum = 'aktif' GROUP BY category")
+      .prepare("SELECT category AS ad, COUNT(*) AS n, MAX(CASE WHEN image_url IS NOT NULL AND image_url <> '' THEN slug END) AS img FROM products WHERE grup = ? AND durum = 'aktif' GROUP BY category")
       .bind(grup).all();
     return (results || []).sort((a, b) => String(a.ad).localeCompare(String(b.ad), 'tr'));
   } catch (e) {
@@ -228,10 +228,63 @@ const GRUPLAR = [
   { b: 'Haksev', ad: 'Ambalaj ve Sevkiyat Malzemeleri', aciklama: 'Bant, streç film, karton, çemberleme ve plastik kasa ürünleri' },
 ];
 
+// v1.16 — Resimler kendi adresimizden verilir (/g/<slug>): tedarikçinin resim adresi
+// (pulnix.com.tr, direnc.net vb.) sayfa kaynağında görünmesin. Kendi sitemizdeki
+// (göreli ya da sahliotomotiv.com) resimler doğrudan kullanılır.
+function gorselAdres(img, slug) {
+  if (!/^https?:\/\//i.test(img) || /^https?:\/\/(www\.)?sahliotomotiv\.com\//i.test(img)) return esc(img);
+  return '/g/' + encodeURIComponent(slug);
+}
+
+// /g/<slug>: ürünün resmini verir. Sıra: Cloudflare önbelleği → kendi R2 depomuz
+// (sahliotomotiv-resim, anahtar = resim adresinin özeti) → tedarikçiden çekip R2'ye
+// kopyalar. Böylece tedarikçi resmi kaldırsa ya da isteği reddetse bile resim bizde kalır.
+// Sadece veritabanındaki aktif ürünün kendi resmi verilir (açık vekil/proxy değildir).
+async function gorselSun(request, env, ctx, slug) {
+  const onbellek = caches.default;
+  const anahtar = new Request(new URL(request.url).origin + '/g/' + encodeURIComponent(slug));
+  const eski = await onbellek.match(anahtar);
+  if (eski) return eski;
+  let row = null;
+  try { row = await env.DB.prepare("SELECT image_url FROM products WHERE slug = ? AND durum = 'aktif'").bind(slug).first(); } catch (e) {}
+  if (!row || !row.image_url || !/^https?:\/\//i.test(row.image_url)) {
+    return new Response('Görsel bulunamadı', { status: 404, headers: { 'Cache-Control': 'public, max-age=600' } });
+  }
+  const ozet = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(row.image_url)))]
+    .slice(0, 16).map(b => b.toString(16).padStart(2, '0')).join('');
+  const r2Anahtar = 'g/' + ozet;
+  const baslik = tur => ({ 'Content-Type': tur, 'Cache-Control': 'public, max-age=604800', 'X-Content-Type-Options': 'nosniff' });
+  if (env.RESIM) {
+    const nesne = await env.RESIM.get(r2Anahtar);
+    if (nesne) {
+      const cevap = new Response(nesne.body, { headers: baslik((nesne.httpMetadata && nesne.httpMetadata.contentType) || 'image/jpeg') });
+      ctx.waitUntil(onbellek.put(anahtar, cevap.clone()));
+      return cevap;
+    }
+  }
+  let r = null;
+  try {
+    r = await fetch(row.image_url, {
+      headers: { 'Referer': new URL(row.image_url).origin + '/', 'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36', 'Accept': 'image/avif,image/webp,image/*,*/*;q=0.8' },
+    });
+  } catch (e) { r = null; }
+  const tur = (r && r.headers.get('Content-Type')) || '';
+  // Tedarikçi o an reddederse (yoğunluk / bot koruması) ziyaretçiyi resme yönlendir:
+  // resim yine görünür, sayfa kaynağında adres yazmaz; 5 dk sonra yeniden denenir.
+  if (!r || !r.ok || !tur.startsWith('image/')) {
+    return new Response(null, { status: 302, headers: { 'Location': row.image_url, 'Cache-Control': 'public, max-age=300', 'X-Durum': String(r ? r.status : 0) } });
+  }
+  const veri = await r.arrayBuffer();
+  if (env.RESIM) ctx.waitUntil(env.RESIM.put(r2Anahtar, veri, { httpMetadata: { contentType: tur }, customMetadata: { kaynak: row.image_url } }));
+  const cevap = new Response(veri, { headers: baslik(tur) });
+  ctx.waitUntil(onbellek.put(anahtar, cevap.clone()));
+  return cevap;
+}
+
 // Ürün kartı/sayfasında görsel: image_url doluysa gerçek fotoğraf gösterilir;
 // boşsa (Güven henüz kendi fotoğrafını eklemediyse) sade "Görsel hazırlanıyor" kutusu.
 function urunGorselHtml(u, sinif) {
-  if (u.image_url) return `<img class="${sinif}" src="${esc(u.image_url)}" alt="${esc(u.name)}" loading="lazy">`;
+  if (u.image_url) return `<img class="${sinif}" src="${gorselAdres(u.image_url, u.slug)}" alt="${esc(u.name)}" loading="lazy">`;
   return `<div class="${sinif === 'urun-detay-gorsel' ? 'urun-yer' : sinif}" style="${sinif === 'urun-detay-gorsel' ? 'max-width:360px' : ''}">Görsel hazırlanıyor</div>`;
 }
 
@@ -324,7 +377,7 @@ function grupSayfasiHtml(il, grupKey, kategoriler) {
   const baslik = grup ? grup.ad : 'Ürünlerimiz';
   const toplam = kategoriler.reduce((t, k) => t + k.n, 0);
   const kartlar = kategoriler.map(k =>
-    `<a class="kat-kart" href="${listeAdres({ grup: grupKey, kat: k.ad })}">${k.img ? `<img class="urun-gorsel" src="${esc(k.img)}" alt="${esc(k.ad)}" loading="lazy">` : ''}<b>${esc(k.ad || 'Diğer')}</b><span class="say">${k.n} ürün ›</span></a>`
+    `<a class="kat-kart" href="${listeAdres({ grup: grupKey, kat: k.ad })}">${k.img ? `<img class="urun-gorsel" src="/g/${encodeURIComponent(k.img)}" alt="${esc(k.ad)}" loading="lazy">` : ''}<b>${esc(k.ad || 'Diğer')}</b><span class="say">${k.n} ürün ›</span></a>`
   ).join('');
   return kabukAc(`${baslik} — Şahlı Otomotiv`, `${baslik}: ${toplam} ürün, ${kategoriler.length} kategori. Şahlı Otomotiv tedarik kataloğu.`) + `
 <main>
@@ -411,9 +464,12 @@ function urunSayfasiHtml(il, urun, kok) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const yol = url.pathname;
+
+    // Ürün resimleri kendi adresimizden (v1.16)
+    if (yol.startsWith('/g/')) return gorselSun(request, env, ctx, decodeURIComponent(yol.slice(3)));
 
     // Yönetim paneli (giriş sadece Şahlı Grup Panel'den)
     if (yol === '/panel' || yol.startsWith('/panel/')) return panelIsle(request, env, url);

@@ -1,6 +1,6 @@
 # ŞAHLI OTOMOTİV — Proje Referans Dosyası
 
-**Güncel sürüm: v1.15 — 17.11.2026 20:50** (sürüm geçmişi Bölüm 6'da)
+**Güncel sürüm: v1.16 — 18.11.2026 23:40** (sürüm geçmişi Bölüm 6'da)
 
 > Serdar Türkçe konuşur, programcı değildir, telefondan çalışır. Kısa, sade anlat; işe başlamadan ne yapacağını söyle, onay al.
 > **Sohbet başında OKU:** `Ntlextr/seraytekno-API` reposundaki **`ORTAK_NOTLAR.md`** (projeler arası ortak bilgiler) ve **`PANEL_REHBERI.md`** (Seray Tekno panellerinin ortak kuralları).
@@ -96,6 +96,7 @@ Serdar: "Admin panelde o ürünün hangi site veya firmadan temin edileceği bel
   - **Audiobus** (Ticari Araç Elektroniği): 5 kategori, kaynak audiobus.com'un genel-amaçlı bölümleri (kamera/monitör, aydınlatma, ses, güç/enerji, wifi router); otobüse özel olanlar (tabela, yangın söndürücü, SWF panel, OAS) dışarıda bırakıldı.
   - Her kategoride Haksev'deki yöntemle kategori + bir temsilci ürün kaydı, genel/doğru tanıtım metniyle (uydurma teknik özellik/model yok).
 - **`/robots.txt`, `/sitemap.xml`:** basit, hazır.
+- **Resimler (v1.16):** bütün ürün resimleri `/g/<slug>` üzerinden, R2 kopyalı (bkz. sürüm geçmişi v1.16). Yeni resim eklenince ilk açılışta kendiliğinden kopyalanır; image_url değişirse yeni kopya alınır.
 - **Henüz YOK:** panel (ürün/kategori ekleme, alış fiyatı görüntüleme), teklif formu (firma adı/yetkili/adet → D1), R2 görsel deposu, personel/giriş sistemi, yasal sayfalar (KVKK, kullanım koşulları).
 
 ## 5. Sırada (öncelik sırasıyla)
@@ -107,6 +108,7 @@ Serdar: "Admin panelde o ürünün hangi site veya firmadan temin edileceği bel
 4. Alan adı bağlanınca: custom domain, e-posta yönlendirme, yasal sayfalar (satıcı = Şahlı Otomotiv Ltd. Şti. olduğu için "faturalı satış" yazılabilir).
 
 ## 6. Sürüm geçmişi
+- **v1.16 — 18.11.2026 23:40** — Ürün resimleri kendi adresimizden: sayfalarda resim adresi artık `/g/<slug>` (tedarikçi adı — pulnix.com.tr, direnc.net vb. — sayfa kaynağında görünmez). `gorselSun`: Cloudflare önbelleği → R2 `sahliotomotiv-resim` (binding `RESIM`, anahtar `g/<adres özeti>`) → tedarikçiden çekip R2'ye kopyalar (resim tedarikçide kalksa da bizde kalır). Tedarikçi o an reddederse (direnc.net yoğunlukta 406 veriyor) 302 ile asıl resme yönlendirir, 5 dk sonra yeniden dener. Sadece veritabanındaki aktif ürünün resmi verilir (açık proxy değil). Kategori kartı örnek resmi de /g/. Panel ham adresleri görmeye devam eder. Worker bağları: DB, RESIM, 2 secret. 1.518 resim tek tek çağrılıp depoya alındı.
 - **v1.15 — 17.11.2026 20:50** — Alan adı bağlandı: NS Cloudflare'e çevrildi, bölge aktif, www.sahliotomotiv.com + çıplak adres Worker'a bağlandı (çıplak → www), HTTPS, bilgi@ e-posta yönlendirmesi; Grup Panel bağlantıları www'ye çevrildi.
 - **v1.14.1 — 16.11.2026 12:58** — Panel beyaz ekran hatası düzeltildi (arama kutusu yazısındaki kesme işareti betiği bozuyordu; giriş çalışıyordu, sayfa boş kalıyordu). Direnç ürünlerinin `kaynak_url`'si bir harf kayık kaydedilmişti ("Tedarikçide aç" çıkmıyordu) → düzeltildi (1.189/1.189). Canlıda Playwright ile 412/1280 px: 50 ürün kartı, 10 firma, ürün sayfasında yönetici şeridi + Tedarikçide aç, JS hatası yok. Panel p1.1.
 - **v1.14 — 16.11.2026 10:50** — Yönetim paneli açıldı (`/panel`, giriş Şahlı Grup Panel'deki 🔑 Panele gir ile): Ürünler (tedarikçi, tedarikçideki link, alış fiyatları, yayına al/kaldır), Tedarik Firmaları (iletişim, üyelik/bayilik, kullanıcı adı, şifreli saklanan ve panelde açılan şifre), Kontroller, Kayıtlar. 10 tedarikçi kaydı; bütün ürünler tedarikçisine bağlandı; `kaynak_url` sütunu. Alış fiyatları: direnc.net site fiyatları (1.189) ve Seray alış kayıtları (277) eklendi — sadece panelde. WhatsApp teklif mesajına ürün linki eklendi; panel açıkken ürün sayfasında yönetici şeridi. Haftalık otomatik kontrol görevi kuruldu (pazartesi 06:55). Yerelde 13 deneme (bilet, tek kullanım, Origin denetimi, şifrenin veritabanında okunmaz olması, link ile arama, şerit sadece yöneticide), canlıda girişsiz 401, sahte bilet reddi, robots.
